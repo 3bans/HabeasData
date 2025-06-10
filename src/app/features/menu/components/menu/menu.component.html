@@ -1,0 +1,16 @@
+<p-card class="cursor-pointer" (click)="onUnidadClick(unidad)" styleClass="h-full " [style]="{ 'background-color': '#FAF9FC' }">
+  <ng-template pTemplate="header">
+    <div class="icon-wrapper">
+      <div class="icon-circle">
+        <i class="{{ unidad | unidadIcon }}"></i>
+      </div>
+    </div>
+  </ng-template>
+
+  <p-divider class="divider-light"></p-divider>
+
+  <div class="card-content">
+    <div class="card-title">{{ unidad.nombre }}</div>
+
+  </div>
+</p-card>

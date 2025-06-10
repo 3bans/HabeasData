@@ -1,0 +1,47 @@
+<!-- login.component.html -->
+<div class="login-container">
+  <app-navbar></app-navbar>
+
+  <div class="card-container">
+    <p-card header="Iniciar Sesión">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="p-fluid space-y-4">
+          <!-- Usuario -->
+          <app-input
+            label="Usuario"
+            placeholder="Ingrese su usuario"
+            icon="pi pi-user"
+            formControlName="user"
+          >
+          </app-input>
+
+          <!-- Contraseña -->
+          <app-input
+            label="Contraseña"
+            placeholder="Ingrese su contraseña"
+            icon="pi pi-lock"
+            type="password"
+            formControlName="password"
+           >
+          </app-input>
+
+          <!-- Mensajes de error -->
+          <div *ngIf="errorMessage" class="p-error-message text-center mb-4">
+            {{ errorMessage }}
+          </div>
+
+          <!-- Botón de ingreso -->
+          <div class="p-field flex justify-content-center">
+            <p-button
+              type="submit"
+              label="{{ loading ? 'Cargando...' : 'Ingresar' }}"
+              icon="pi pi-sign-in"
+              styleClass="p-button-raised p-button-lg"
+              [disabled]="loginForm.invalid || loading">
+            </p-button>
+          </div>
+        </div>
+      </form>
+    </p-card>
+  </div>
+</div>

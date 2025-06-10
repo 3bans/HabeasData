@@ -1,0 +1,70 @@
+/* 1. El propio card */
+:host ::ng-deep .custom-card {
+  background-color: #F9FAFC;
+
+  border-radius: 1rem;            /* bordes suaves */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* sombra ligera */
+  padding: 1.5rem 1rem;           /* respiración interior */
+}
+::ng-deep .pi {
+  font-family: "PrimeIcons" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+}
+:host ::ng-deep .icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2rem;  /* Nuevo espacio superior */
+
+}
+/* 2. Círculo del icono */
+:host ::ng-deep .icon-circle {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  background: #E4F0A4;
+
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .icon-circle i {
+  font-size: 2.5rem;
+  color: #3968A0;
+}
+
+/* 3. Divider más suave */
+:host ::ng-deep .divider-light .p-divider {
+  border-color: #e5e5e5;
+}
+
+/* 4. Contenido textual */
+.card-content {
+  text-align: center;
+}
+
+.card-title {
+  font-size: 2.25rem;      /* equivalente a text-lg */
+  font-weight: 600;
+  color: #3968A0;             /* gris claro */
+  margin-bottom: 0.5rem;
+}
+
+.card-subtitle {
+  font-size: 0.875rem;     /* equivalente a text-sm */
+  color: #666;
+  line-height: 1.4;
+  min-height: 2rem;        /* para mantener alturas similares */
+}
+.custom-icon {
+  font-size: 4rem;
+  color: #3968A0;
+  font-family: 'PrimeIcons';
+}

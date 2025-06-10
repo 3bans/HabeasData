@@ -1,0 +1,102 @@
+<app-navbar></app-navbar>
+<app-modal
+  [(visible)]="showModal"
+  headerTitle="Motivo de no autorización"
+    [dialogStyle]="{ width: '1000px', height: '400px' }"
+
+  (accept)="closeModal()"
+  (cancel)="closeModal()"
+>
+  <!-- Este div será insertado en el <ng-content select="[modal-body]"> -->
+  <div modal-body class="p-fluid">
+    <label for="motivo">Explíquenos por qué no autoriza:</label>
+
+
+<p-select
+ [options]="motivosHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"  />
+
+
+  </div>
+</app-modal>
+<div class="flex justify-content-center surface-50 py-6 px-4">
+  <div class="surface-card p-5 shadow-3 border-round-xl w-full" style="max-width: 1200px;">
+
+    <h2 class="text-2xl font-semibold mb-5 border-bottom-1 surface-border pb-3">
+      Registro Habeas Data
+    </h2>
+
+    <!-- FORMULARIO -->
+    <form [formGroup]="formHabeas" (ngSubmit)="onSubmit()" class="grid formgrid p-fluid">
+
+      <!-- Tipo de documento alineado con inputs -->
+      <div class="field col-12 md:col-6">
+        <label for="tipoDocumento">Tipo de documento</label>
+<p-select formControlName="tipoDocumento" [options]="tipoDocumentoOptions" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"   optionValue="value"  />
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="identificadorUnico" label="Número de identificación" placeholder="Número de identificación" icon="pi pi-id-card"></app-input>
+      </div>
+  <div class="field col-12 md:col-6">
+        <app-input formControlName="identificacion" label="Identificador único" placeholder="Identificador único" icon="pi pi-id-card"></app-input>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="nombresPaciente"  label="Nombres Paciente" placeholder="Nombres paciente" icon="pi pi-user"
+        ></app-input>
+
+
+      </div>
+
+        <div class="field col-12 md:col-6">
+        <app-input formControlName="primerApellido" label="Primer Apellido" placeholder="Primer apellido" icon="pi pi-user"></app-input>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="segundoApellido" label="Segundo Apellido" placeholder="Segundo apellido" icon="pi pi-user"></app-input>
+      </div>
+
+
+
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="celular" label="Número celular" placeholder="Número celular" icon="pi pi-mobile"></app-input>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="fechaNacimiento" label="Fecha de nacimiento" placeholder="Fecha de nacimiento" icon="pi pi-calendar"></app-input>
+      </div>
+
+
+
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="correoElectronico" label="Correo Electrónico" placeholder="Correo electrónico" icon="pi pi-envelope"></app-input>
+      </div>
+   <div class="field col-12 md:col-6">
+                <label for="tipoDocumento">Autorización habeas</label>
+
+<p-select formControlName="autorizacionHabeas"      (onChange)="onAutorizacionChange($event.value)"
+ [options]="RespuestaHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"  />
+      </div>
+      <!-- BOTONES -->
+
+    </form>
+
+
+      <div *ngIf="mensajeErrorHabeas" class="banner-error">
+  <i class="pi pi-times-circle icon-error"></i>
+  <span class="texto-error">{{ mensajeErrorHabeas }}</span>
+</div>
+
+     <div *ngIf="mensajeErrorBusquedad" class="banner-error">
+  <i class="pi pi-times-circle icon-error"></i>
+  <span class="texto-error">{{ mensajeErrorBusquedad }}</span>
+</div>
+
+
+      <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">
+        <button pButton type="button" label="Limpiar" class="p-button-outlined p-button-secondary w-8rem" (click)="onReset()"></button>
+        <button pButton type="submit" label="Registrar" class="p-button-primary w-8rem"></button>
+      </div>
+
+  </div>
+</div>

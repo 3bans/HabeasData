@@ -1,0 +1,16 @@
+<app-navbar></app-navbar>
+
+<main class="bg-white min-h-screen pt-5">
+  <div class="max-w-6xl mx-auto">
+    <!-- Añadimos mt-5 para separar del navbar -->
+    <div class="grid gap-6 justify-content-center align-content-start mt-5 pt-20">
+      <div *ngFor="let unidad of apps" class="col-12 md:col-6 lg:col-3 pt-8" >
+        <app-menu
+          [unidad]="unidad"
+          (clickUn)="onUnidadClick($event)"
+          class="w-full h-full"
+        ></app-menu>
+      </div>
+    </div>
+  </div>
+</main>

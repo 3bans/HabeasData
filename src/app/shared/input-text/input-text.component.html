@@ -1,0 +1,26 @@
+<!-- input-text.component.html -->
+<div class="p-field">
+  <label *ngIf="label">{{ label }}</label>
+
+  <span class="p-input-icon-left" *ngIf="icon">
+    <i [class]="icon"></i>
+    <input
+      [type]="type"
+      [placeholder]="placeholder"
+      [value]="value"
+      (input)="onInput($event)"
+      (blur)="onTouched()"
+      [disabled]="disabled"
+    >
+  </span>
+
+  <input
+    *ngIf="!icon"
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onTouched()"
+    [disabled]="disabled"
+  >
+</div>

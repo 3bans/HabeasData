@@ -1,0 +1,83 @@
+/* Contenedor principal del input */
+.p-field {
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+/* Etiqueta del input */
+.p-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Input base */
+input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #ced4da;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  color: #495057;
+}
+
+/* Input con icono */
+.p-input-icon-left {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+/* Icono */
+.p-input-icon-left i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+
+/* Estados del input */
+input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+/* Versión responsive */
+@media (min-width: 768px) {
+  input {
+    font-size: 1.05rem;
+    padding: 0.875rem 1.25rem;
+  }
+
+
+
+  .p-input-icon-left i {
+    left: 1.25rem;
+    font-size: 1.3rem;
+  }
+
+  /* Input con icono */
+.p-input-icon-left input {
+  padding-left: 2.8rem !important;
+  width: 100%;
+}
+
+/* Input normal (sin icono) */
+input:not(.p-input-icon-left) {
+  width: 100%;
+}
+}

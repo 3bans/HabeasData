@@ -1,0 +1,120 @@
+/* Ícono simulado con background para p-select */
+.pi-id-card {
+  background-image: url("data:image/svg+xml,%3Csvg fill='gray' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5v14h18V5H3zm16 12H5V7h14v10zM6 8h4v2H6zm0 3h7v2H6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.5rem center;
+  background-size: 1rem;
+  height: 53% !important;
+  padding: 0.625rem 1rem !important;
+  background-color: #ffffff;
+  border-color: #6366f1;
+    border: 2px solid #ced4da;  /* Borde por defecto */
+  transition: all 0.3s ease;
+  color: #495057;
+
+}
+
+/* Contenedor principal del p-select */
+.p-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #ced4da;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Etiqueta del p-select */
+.p-select-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Cuando el p-select tiene foco */
+.p-select:focus-within {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Estado deshabilitado */
+.p-select:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+/* Estilo para el icono del p-select */
+.p-select-trigger {
+  padding: 0.625rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilo al hacer hover en el icono */
+.p-select-trigger:hover {
+  background-color: #f1f1f1;
+}
+
+/* Ajustar la posición del ícono */
+.p-select-trigger i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Versión responsive */
+@media (min-width: 768px) {
+  .p-select {
+    font-size: 1.05rem;
+    padding: 0.875rem 1.25rem;
+  }
+
+  /* Ajustar el ícono si es necesario */
+  .p-select-trigger i {
+    font-size: 1.3rem;
+  }
+
+  /* Banner de error rosado con borde rojo y texto al lado */
+.banner-error {
+  display: flex;
+  align-items: center;
+  background-color: #fde2e2;   /* Rosa muy claro */
+  border: 1px solid #f5c2c2;    /* Rosa un poco más oscuro */
+  color: #9e1a1a;               /* Tono oscuro para el texto */
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  margin: 1rem auto;
+  max-width: 1200px;
+  height:10%
+}
+
+.icon-error {
+  font-size: 1.9rem;
+  margin-right: 0.75rem;
+  color: #d32f2f; /* Rojo oscuro para el ícono */
+}
+
+/* Texto dentro del banner */
+.texto-error {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+}

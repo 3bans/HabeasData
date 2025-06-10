@@ -1,0 +1,61 @@
+/* Ajuste para el logo, asegurándonos de que sea más flexible */
+.logo {
+  width: 60vw; /* El logo toma el 20% del ancho de la pantalla */
+  height: auto;
+  max-width: 350px; /* Limitar el tamaño máximo para el logo */
+  display: block;
+}
+.habeas-text {
+  font-size: 1.4vw; /* El tamaño de la letra será proporcional al 4% del ancho de la pantalla */
+  font-weight: bold;
+  white-space: nowrap; /* Evitar que el texto se rompa en dos líneas */
+  color: #3968A0;
+}
+/* Ajuste para los íconos */
+.icono {
+  width: 60vw; /* El icono toma el 10% del ancho de la pantalla */
+  height: auto;
+  max-width: 90px; /* Limitar el tamaño máximo del icono */
+  margin-right: 15px;  /* Agregar espacio a la derecha de la imagen */
+
+}
+
+/* Menú en general */
+.p-menubar-root-list {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  /* Redimensionar el logo en pantallas pequeñas */
+  .logo {
+    width: 30vw; /* El logo ocupa el 30% del ancho de la pantalla */
+    max-width: 220px; /* Ajuste máximo del tamaño del logo */
+  }
+
+  /* Ajustar el tamaño de los iconos */
+  .icono {
+    width: 20vw;  /* Los iconos ocupan el 20% del ancho de la pantalla */
+    max-width: 80px;  /* Tamaño máximo de los iconos */
+    margin-right: 15px;  /* Agregar espacio a la derecha de la imagen */
+
+  }
+
+  /* Cambiar el diseño del menú en pantallas más pequeñas */
+  .p-menubar-root-list {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .p-menuitem {
+    margin-bottom: 10px;
+  }
+
+  .habeas-text {
+    font-size: 5vw;  /* Aumentar el tamaño proporcionalmente en pantallas pequeñas */
+    color: #3968A0;
+  }
+}

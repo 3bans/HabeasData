@@ -1,0 +1,65 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 2rem;
+  width: 100%;
+}
+
+p-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px !important;
+  width: 100%;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+/* Tamaños responsivos */
+@media (min-width: 576px) {  /* Pequeñas pantallas (móviles grandes) */
+  p-card {
+    max-width: 35rem;  /* 560px */
+  }
+}
+
+@media (min-width: 768px) {  /* Tablets */
+  p-card {
+    max-width: 45rem;  /* 720px */
+    padding: 2.5rem;
+  }
+
+  ::ng-deep .p-card .p-card-title {
+    font-size: 2rem;  /* Título más grande */
+  }
+}
+
+@media (min-width: 992px) {  /* Escritorios */
+  p-card {
+    max-width: 50rem;  /* 800px */
+    padding: 3rem;
+  }
+}
+
+/* Ajustes de contenido interno */
+::ng-deep .p-card .p-card-content {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+::ng-deep .p-card .p-card-title {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+/* Botón más prominente */
+::ng-deep .p-button {
+  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem;
+}

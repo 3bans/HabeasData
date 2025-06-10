@@ -1,0 +1,4 @@
+/* Ajusta tamaño, padding, lo que necesites */
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 1.5rem;
+}
