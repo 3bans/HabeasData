@@ -18,6 +18,7 @@ import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angula
 import { ApiResponse, PacienteResponse } from '../../interfaces/PacienteResponse.interface';
 import { ApiService } from '../../../../core/api/api.service';
 import { ModalComponent } from "../../../../shared/modal/modal.component";
+import { ListSelectLoaderComponent } from "../../../../shared/ListLoaderComponent/ListLoaderComponent.component";
 
 @Component({
   selector: 'app-paciente-habeas',
@@ -29,7 +30,8 @@ import { ModalComponent } from "../../../../shared/modal/modal.component";
     PrimeNGModule,
     DividerModule,
     InputComponent,
-    ModalComponent
+    ModalComponent,
+    ListSelectLoaderComponent
 ],
   templateUrl: './pacienteHabeas.component.html',
   styleUrls: ['./pacienteHabeas.component.css'],
@@ -37,44 +39,50 @@ import { ModalComponent } from "../../../../shared/modal/modal.component";
 export class PacienteHabeasComponent implements OnInit, OnDestroy {
   formHabeas!: FormGroup;
     showModal = false;
-
+   public  urlCargarLista="";
+   public  urlMotivosHabeas="";
   private formChangesSub!: Subscription;
    mensajeErrorHabeas: string | null = null;
    mensajeErrorBusquedad: string | null = null;
-
-
-  tipoDocumentoOptions = [
-    { label: 'Cédula de Ciudadanía', value: 'CC' },
-    { label: 'Tarjeta de Identidad', value: 'TI' },
-    { label: 'Cédula de Extranjería', value: 'CE' },
-  ];
+      mensajeEstadoHabeas: any | null = null;
+selectedMedicoId!: string;
+selectedMotivoId!: string;
+identificacion!: any;
+ tipoDocumentoOptions = [
+  { label: 'Cédula de Ciudadanía',                   value: 'CC'   },
+  { label: 'Tarjeta de Identidad',                    value: 'TI'   },
+  { label: 'Registro Civil de Nacimiento',            value: 'RC'   },
+  { label: 'Cédula de Extranjería',                   value: 'CE'   },
+  { label: 'Pasaporte',                                value: 'P'    },
+  { label: 'Permiso Especial de Permanencia',         value: 'PEP'  },
+  { label: 'Permiso por Protección Temporal',         value: 'PPT'  },
+  { label: 'Salvoconducto de Permanencia',            value: 'SC'   },
+  { label: 'Carné Diplomático',                       value: 'CD'   },
+  { label: 'Número de Identificación Tributaria',     value: 'NIT'  },
+  { label: 'Documento de Identificación Extranjero',  value: 'DE'   },
+  { label: 'Sin identificación del Exterior',          value: 'SX'   }
+];
 
   RespuestaHabeas = [
     { label: 'Si', value: 'Si' },
     { label: 'No', value: 'No' },
   ];
 
-   motivosHabeas = [
-  { label: 'Urgencia médica',                       value: 'UM'   }, // U=Urgencia, M=Médica
-  { label: 'Condición clínica paciente',            value: 'CCP'  }, // C=Condición, C=Clínica, P=Paciente
-  { label: 'Condición mental paciente',             value: 'CMP'  }, // C=Condición, M=Mental, P=Paciente
-  { label: 'Menor de edad sin representante legal', value: 'MERL' }, // M=Menor, E=Edad, RL=Rep. Legal
-  { label: 'No especifica',                         value: 'NE'   }  // N=No, E=Especifica
-];
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
-        private apiService: ApiService
+    private apiService: ApiService
 
   ) {}
 
   ngOnInit(): void {
+      this.identificacion = localStorage.getItem('token');
+  if (this.identificacion) {
+    this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(this.identificacion);
+      this.urlMotivosHabeas=API_URLS.motivosHabeas;
+  }
     this.formHabeas = this.fb.group({
-    // Estos dos se habilitan desde el inicio
     tipoDocumento:      [null, Validators.required],
     identificadorUnico: ['', Validators.required],
-
-
     identificacion:     [{ value: '', disabled: true }, Validators.required],
     nombresPaciente:    [{ value: '', disabled: true }, Validators.required],
     primerApellido:     [{ value: '', disabled: true }, Validators.required],
@@ -86,61 +94,42 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
   });
     this.mensajeErrorHabeas = null;
     this.mensajeErrorBusquedad=null;
-
-    // Si quieres disparar la validación cuando usuario cambie ambos campos:
+    this.mensajeEstadoHabeas=null;
  this.formChangesSub = this.formHabeas.valueChanges
   .pipe(
     debounceTime(400),
     distinctUntilChanged((prev, curr) =>
       prev.tipoDocumento === curr.tipoDocumento &&
       prev.identificadorUnico === curr.identificadorUnico
-    )
-  )
+    ))
   .subscribe(valores => {
     const { tipoDocumento, identificadorUnico } = valores;
-
-    // Sólo llama ambas funciones si ambos campos están válidos
     if (
       this.formHabeas.get('tipoDocumento')!.valid &&
       this.formHabeas.get('identificadorUnico')!.valid
     ) {
-      // Llamar primero a consultarInformacionPaciente()
-
-        this.mensajeErrorHabeas = null;
+    this.mensajeErrorHabeas = null;
     this.mensajeErrorBusquedad=null;
       this.consultarInformacionPaciente();
-
-      // Luego a consultarHabeas()
       this.consultarHabeas();
     }
   });
-
   }
 
  consultarInformacionPaciente(): void {
-    // 1) Sacamos los valores del FormGroup
     const tipoDocumento      = this.formHabeas.get('tipoDocumento')!.value;
     const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
-
-    // 2) Construimos la URL de infoPaciente
     const urlInfoPaciente = API_URLS.administradorHabeas
       .consultaInformacion( identificadorUnico,tipoDocumento);
-
-      console.log("url buscar"+urlInfoPaciente);
-    // 3) Llamamos a ApiService.getResponse() para leer status y body
+     // console.log("url buscar"+urlInfoPaciente);
     this.apiService
       .getResponse<ApiResponse<PacienteResponse>>(urlInfoPaciente)
       .subscribe({
         next: (response: HttpResponse<ApiResponse<PacienteResponse>>) => {
-          // 3a) Si el status HTTP es 200 y hay body
           if (response.status === 200 && response.body) {
             const apiResp = response.body;
-
-            // 3b) Si hay un objeto en results → existe paciente
             if (apiResp.results) {
               const datos: PacienteResponse = apiResp.results;
-
-              // 3c) PatchValue en el formulario con los valores del WS
               this.formHabeas.patchValue({
                 identificacion:    datos.numPaciente,
                 nombresPaciente:   datos.nombres,
@@ -149,10 +138,8 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
                 celular:           datos.celular,
                 fechaNacimiento:   datos.fechaNacimiento,
                 correoElectronico: datos.correo
-                // NOTA: no parcheamos tipoDocumento ni identificadorUnico
               });
           this.formHabeas.get('autorizacionHabeas')!.enable();
-
               console.log('Paciente existe (200):', datos);
             } else {
                 this.mensajeErrorBusquedad = 'No se encuentra infomación del paciente';
@@ -161,7 +148,6 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
           }
         },
         error: (err: HttpErrorResponse) => {
-          // 4) Si el servidor responde 404 o hay otro error
           if (err.status === 404) {
             console.warn('No existe el paciente (404).');
             this.mensajeErrorBusquedad = 'No se encuentra infomación del paciente';
@@ -180,36 +166,49 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
   /**
    * Este método lee los valores de los controles y construye la URL con comillas simples dentro.
    */
-  consultarHabeas() {
-    // 1) Sacamos los valores directamente del FormGroup:
-    const tipoDocumento = this.formHabeas.get('tipoDocumento')!.value;
-    const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
+consultarHabeas(): void {
+  const tipoDocumento = this.formHabeas.get('tipoDocumento')!.value;
+  const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
+  const urlEstadoHabeas = API_URLS.administradorHabeas.consultaEstadoHabeas(identificadorUnico, tipoDocumento);
 
-    // 2) Mostramos en consola para verificar:
-    console.log('Tipo de documento:', tipoDocumento);
-    console.log('Identificación:', identificadorUnico);
+  this.apiService.getResponse<ApiResponse<any>>(urlEstadoHabeas).subscribe({
+    next: (response: HttpResponse<ApiResponse<any>>) => {
+      if (response.status === 200 && response.body) {
+        const apiResp = response.body;
 
-   const urlEstadoHabeas= API_URLS.administradorHabeas.consultaEstadoHabeas(identificadorUnico,tipoDocumento);
-    console.log('URL a consumir:', urlEstadoHabeas);
+//this.mensajeEstadoHabeas=apiResp.results.nombreMedico;
 
-    // 4) Consumimos con HttpClient:
-    this.http.get(urlEstadoHabeas, { observe: 'response' }).subscribe({
-      next: response => {
-        if (response.status === 200) {
-          console.log('Paciente existe (200).');
-        }
-      },
-      error: err => {
-        if (err.status === 404) {
-        this.mensajeErrorHabeas = 'El usuario no registra Habeas Data';
+let nombres: string[] = [];
 
-          console.warn('No existe el paciente (404).');
-        } else {
-          console.error('Error al consultar Habeas:', err);
-        }
+if (Array.isArray(apiResp.results)) {
+  nombres = apiResp.results.map((item: any) => item.nombreMedico);
+} else if (apiResp.results?.nombreMedico) {
+  nombres = [apiResp.results.nombreMedico];
+}
+
+if (nombres.length === 1) {
+  this.mensajeEstadoHabeas = `El paciente tiene Habeas Data con el médico: <span class="nombre-medico">${nombres[0]}</span>`;
+} else {
+  const lista = nombres.map(n => `<span class="nombre-medico">${n}</span>`).join(', ');
+  this.mensajeEstadoHabeas = `El paciente tiene Habeas Data con los médicos: ${lista}`;
+}
+
+       // console.log('✔️ Habeas Data encontrado (200):', apiResp.results ?? apiResp);
+        this.mensajeErrorHabeas = ''; // Limpia mensaje si existía
+      } else {
+        console.warn('⚠️ Status 200 pero sin datos de habeas.');
       }
-    });
-  }
+    },
+    error: (err: HttpErrorResponse) => {
+      if (err.status === 404) {
+        console.warn('❌ Usuario no registra Habeas (404).');
+        this.mensajeErrorHabeas = 'El usuario no registra Habeas Data';
+      } else {
+        console.error('❌ Error al consultar Habeas Data:', err);
+      }
+    }
+  });
+}
 
 
   onAutorizacionChange(value: any) {
@@ -220,27 +219,82 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
       this.closeModal();
     }
   }
+
+cargarLista(){
+
+   const identificacion = localStorage.getItem('token');
+    this.urlCargarLista= API_URLS.cargarListaMedicos.cargarLista(identificacion!);
+    this.urlMotivosHabeas=API_URLS.motivosHabeas;
+   // console.log('url motivos'+this.urlMotivosHabeas);
+}
+
  openModal() {
+    this.cargarLista();
     this.showModal = true;
   }
   closeModal() {
     this.showModal = false;
   }
-
-
-  // Función para reiniciar el formulario
   onReset() {
     this.formHabeas.reset();
   }
-
-  // Función para enviar el formulario completo
   onSubmit() {
     if (this.formHabeas.valid) {
-      console.log('Enviando formulario:', this.formHabeas.value);
-      // Aquí podrías llamar a registrarHabeas() o similar
+    //  console.log('Enviando formulario:', this.formHabeas.value);
     } else {
       console.log('Formulario no válido');
       this.formHabeas.markAllAsTouched();
     }
   }
+
+ onSeleccion(value: any, type: 'medico' | 'motivo'): void {
+  if (type === 'medico') {
+    this.selectedMedicoId = value;
+  } else {
+    this.selectedMotivoId = value;
+  }
+  console.log(`✅ Seleccionado ${type}:`, value);
+}
+
+
+registerHabeas(): void {
+  const body = {
+    idMedico: +this.selectedMedicoId,
+    idAplicacion: 3,
+    idMotivo: this.selectedMotivoId !== null ? +this.selectedMotivoId : null,
+
+    noIdentificacion: this.formHabeas.get('identificadorUnico')!.value,
+    tipoId: this.formHabeas.get('tipoDocumento')!.value,
+    fechaAprobacion: new Date().toISOString().substring(0, 10),
+    aprobacion: 'S',
+    idColaborador: this.identificacion,
+    nombreColaborador: 'TU_NOMBRE_USUARIO',
+    puntoAtencion: 'TU_PUNTO',
+    medioAutorizacion: 'Digital',
+    codigo: '',
+    historia: this.formHabeas.get('identificacion')!.value,
+    correoEnviado: this.formHabeas.get('correoElectronico')!.value
+  };
+
+  console.log('📤 Enviando body a backend:', body);
+
+  this.apiService
+    .post<ApiResponse<any>>(API_URLS.registrarHabeas, body)
+    .subscribe({
+      next: (response: ApiResponse<any>) => {
+        console.log('✅ Registro exitoso:', response);
+        this.showModal = false;
+        // Aquí puedes mostrar un toast o limpiar el formulario
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('❌ Error al registrar Habeas:', err);
+        // Mostrar mensaje al usuario si deseas
+      }
+    });
+}
+
+
+
+
+
 }

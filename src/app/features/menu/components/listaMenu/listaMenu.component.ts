@@ -34,7 +34,7 @@ export class ListaMenuComponent implements OnInit {
   fetchApps() {
     const token = localStorage.getItem('token');
     const url = API_URLS.gateway.validarToken+token;
-
+console.log('url menu'+url);
     // Llamada a la API pasando el token como parámetro
     this.apiService.get<ListaPermisos[]>(url, { token }).subscribe(
       (response) => {

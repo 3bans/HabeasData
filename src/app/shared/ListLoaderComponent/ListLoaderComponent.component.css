@@ -14,36 +14,6 @@
 
 }
 
-.banner-info {
-  background-color: #e0f3ff;
-  border-left: 5px solid #2196f3;
-  padding: 1rem;
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  border-radius: 4px;
-}
-
-.icon-info {
-  color: #2196f3;
-  font-size: 1.7rem;
-  margin-right: 0.75rem;
-}
-
-.texto-info {
-  color: #0d47a1;
-  font-weight: 600;
-  font-size: 1.2rem;
-  line-height: 1.5;
-}
-
-::ng-deep .nombre-medico {
-  color: green;
-  font-weight: bold;
-  font-size: 1.3rem;
-}
-
-
 /* Contenedor principal del p-select */
 .p-select {
   width: 100%;

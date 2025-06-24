@@ -1,22 +1,43 @@
 <app-navbar></app-navbar>
 <app-modal
   [(visible)]="showModal"
-  headerTitle="Motivo de no autorización"
-    [dialogStyle]="{ width: '1000px', height: '400px' }"
-
-  (accept)="closeModal()"
+  headerTitle="Motivo de no autorización " class="mb-6 block"
+    [dialogStyle]="{ width: '1000px', height: '600px' }"
+  (accept)="registerHabeas()"
   (cancel)="closeModal()"
 >
   <!-- Este div será insertado en el <ng-content select="[modal-body]"> -->
-  <div modal-body class="p-fluid">
-    <label for="motivo">Explíquenos por qué no autoriza:</label>
 
 
-<p-select
- [options]="motivosHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"  />
+    <div modal-body class="p-fluid">
+<label   class="mb-4 block">Por favor seleccione al médico con el que no aceptan el habeas data:</label>
+<app-list-select-loader
+  [url]="urlCargarLista"
+  [optionLabel]="'nombreMedico'"
+  [optionValue]="'noIdentificacion'"
+  (selectedChange)="onSeleccion($event, 'medico')"
+class="mb-4 block"
+></app-list-select-loader>
 
+
+    <label  for="motivo" class="mb-4 block">Explíquenos por qué no autoriza:</label>
+
+
+
+
+
+ <app-list-select-loader
+  [url]="urlMotivosHabeas"
+  [optionLabel]="'descripcion'"
+  [optionValue]="'id_motivo'"
+  (selectedChange)="onSeleccion($event,'motivo')"
+class="mb-4 block"
+></app-list-select-loader>
 
   </div>
+
+
+
 </app-modal>
 <div class="flex justify-content-center surface-50 py-6 px-4">
   <div class="surface-card p-5 shadow-3 border-round-xl w-full" style="max-width: 1200px;">
@@ -91,6 +112,16 @@
   <i class="pi pi-times-circle icon-error"></i>
   <span class="texto-error">{{ mensajeErrorBusquedad }}</span>
 </div>
+     <div *ngIf="mensajeErrorBusquedad" class="banner-error">
+  <i class="pi pi-times-circle icon-error"></i>
+  <span class="texto-error">{{ mensajeErrorBusquedad }}</span>
+</div>
+
+<div *ngIf="mensajeEstadoHabeas" class="banner-info">
+  <i class="pi pi-info-circle icon-info"></i>
+  <span class="texto-info" [innerHTML]="mensajeEstadoHabeas"></span>
+</div>
+
 
 
       <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">

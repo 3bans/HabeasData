@@ -13,17 +13,22 @@ gateway: {
   },
 
 
-   administradorHabeas: {
+administradorHabeas: {
     consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
       `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/existe?noIdentificacion='${identificacion}'&tipoId='${tipoDocumento}'`,
 
     consultaInformacion: (identificacion: string, tipoDocumento: string): string =>
       `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/paciente/buscar?tipoId='${tipoDocumento}'&numId='${identificacion}'`,
 
+  },
+  cargarListaMedicos:{
+    cargarLista: (identificacion: string): string =>
+      `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/secretaria/'${identificacion}'`,
+  },
+    motivosHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/motivos`,
+    registrarHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/registrar`,
 
 
-
-  }
 
 
 }

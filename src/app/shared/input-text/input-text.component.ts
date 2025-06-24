@@ -2,6 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { PrimeNGModule } from '../../ui/primeng/primeng.module';
 
 @Component({
   selector: 'app-input',
@@ -10,13 +11,14 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   styleUrls: ['./input-text.component.css'],
   providers: [
     {
+
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputComponent),
       multi: true
     }
   ],
 
-  imports:[CommonModule]
+  imports:[CommonModule,PrimeNGModule]
 })
 export class InputComponent implements ControlValueAccessor {
   @Input() label: string = '';
