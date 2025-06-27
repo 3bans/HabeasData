@@ -39,6 +39,42 @@ class="mb-4 block"
 
 
 </app-modal>
+
+<app-modal
+  [(visible)]="showModalRegistro"
+  headerTitle="Autorización de habeas data " class="mb-6 block"
+    [dialogStyle]="{ width: '1000px', height: '600px' }"
+  (accept)="registerHabeas()"
+  (cancel)="closeModal()"
+>
+  <!-- Este div será insertado en el <ng-content select="[modal-body]"> -->
+
+
+    <div modal-body class="p-fluid">
+<label   class="mb-4 block">Por favor seleccione al médico para firmar  el habeas data:</label>
+<app-list-select-loader
+  [url]="urlCargarLista"
+  [optionLabel]="'nombreMedico'"
+  [optionValue]="'noIdentificacion'"
+  (selectedChange)="onSeleccion($event, 'medico')"
+class="mb-4 block"
+></app-list-select-loader>
+
+
+    <label  for="motivo" class="mb-4 block">Medio de autorización:</label>
+
+
+
+
+
+<p-select [options]="TipoHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"   optionValue="value"  />
+
+
+  </div>
+
+
+
+</app-modal>
 <div class="flex justify-content-center surface-50 py-6 px-4">
   <div class="surface-card p-5 shadow-3 border-round-xl w-full" style="max-width: 1200px;">
 
@@ -97,6 +133,8 @@ class="mb-4 block"
 
 <p-select formControlName="autorizacionHabeas"      (onChange)="onAutorizacionChange($event.value)"
  [options]="RespuestaHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"  />
+
+
       </div>
       <!-- BOTONES -->
 
@@ -119,14 +157,15 @@ class="mb-4 block"
 
 <div *ngIf="mensajeEstadoHabeas" class="banner-info">
   <i class="pi pi-info-circle icon-info"></i>
-  <span class="texto-info" [innerHTML]="mensajeEstadoHabeas"></span>
+  <div class="texto-info" [innerHTML]="mensajeEstadoHabeas"></div>
 </div>
 
 
 
       <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">
         <button pButton type="button" label="Limpiar" class="p-button-outlined p-button-secondary w-8rem" (click)="onReset()"></button>
-        <button pButton type="submit" label="Registrar" class="p-button-primary w-8rem"></button>
+        <button pButton type="submit" label="Registrar" class="p-button-primary w-8rem"   [disabled]="!registroHabilitado"
+ (click)="openModalRegistrar()"></button>
       </div>
 
   </div>

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, forwardRef, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
@@ -37,14 +37,23 @@ export class ListSelectLoaderComponent implements OnInit, ControlValueAccessor {
 
   constructor(private http: HttpClient) {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['url'] && this.url && this.url.trim() !== '') {
+      this.loadData();
+    }
+  }
+
   ngOnInit(): void {
+    // La carga inicial se delega a ngOnChanges
+  }
+
+  private loadData(): void {
     this.http.get<any>(this.url).subscribe({
       next: res => {
         this.items = this.dataPath ? res[this.dataPath] : res;
-       // console.log(res);
       },
       error: err => {
-        console.error('Error cargando lista desde el backend:', err);
+        console.error('❌ Error cargando lista desde el backend:', err);
       }
     });
   }

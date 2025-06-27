@@ -22,9 +22,12 @@ administradorHabeas: {
 
   },
   cargarListaMedicos:{
-    cargarLista: (identificacion: string): string =>
-      `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/secretaria/'${identificacion}'`,
+  cargarLista :(idUsuario: string, idPaciente: string, aprobacion: string): string =>
+  `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/secretaria/'${idUsuario}'/'${idPaciente}'/'${aprobacion}'`,
   },
+
+
+
     motivosHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/motivos`,
     registrarHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/registrar`,
 
