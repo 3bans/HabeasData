@@ -54,7 +54,9 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => { // No recibe parámetro "success"
         this.loading = false;
-        this.router.navigate(['/ListaMenuComponent']); // Navega directamente
+localStorage.setItem('token', this.loginForm.get('user')?.value || '');
+
+  this.router.navigate(['/menu']);
         console.log("home");
       },
       error: (err) => {

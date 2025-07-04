@@ -17,3 +17,7 @@ export interface ApiResponse<T> {
   description: string;
   results:     T;
 }
+export interface ValidarCodigoResponse {
+  success: boolean;
+  message: string;
+}

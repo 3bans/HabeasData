@@ -1,9 +1,9 @@
 import { environment } from "../../../environments/environment";
 
 export const API_URLS = {
-  ldap: {
-    postLDA: 'http://svr-helena:8086/hnsLogin-0.0.1-SNAPSHOT/ldap/ldapHns/',
-  },
+
+
+
 gateway: {
     login:`${environment.apiGateway}:${environment.apiPorts.postGateway}/habeasLogin/api/auth/login`,
       validarToken:`${environment.apiGateway}:${environment.apiPorts.postGateway}/habeasLogin/api/apps/`,
@@ -26,12 +26,9 @@ administradorHabeas: {
   `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/secretaria/'${idUsuario}'/'${idPaciente}'/'${aprobacion}'`,
   },
 
-
-
+    enviarSMS:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/enviar`,
     motivosHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/motivos`,
     registrarHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/registrar`,
-
-
-
-
+    puntoServicio:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/oracle/servicios`,
+    validarCodigo:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/validarCodigo`
 }

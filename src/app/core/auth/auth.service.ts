@@ -6,11 +6,12 @@ import { StorageService } from '../../shared/utils/storage.service';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import { API_URLS } from '../config/apiConfig';
-
+import { jwtDecode } from 'jwt-decode';
 interface LoginResponse {
   code: number;
   description: string;
   accessToken: string;
+  nombre:string;
   user?: User;
 }
 
@@ -37,6 +38,7 @@ export class AuthService {
   private loadInitialState(): void {
     const token = this.storage.get('jwt_token');
     const user = this.storage.get('current_user');
+    console.log(token);
     if (token && user) {
       this.currentUserSubject.next(JSON.parse(user));
     }
@@ -50,7 +52,10 @@ login(credentials: LoginCredentials): Observable<void> {
   return this.http.post<LoginResponse>(this.authUrl, credentials, { headers }).pipe(
     tap(response => {
       if (response.code === 200 && response.accessToken) {
+
         this.setToken(response.accessToken); // Solo guarda el token
+
+         localStorage.setItem('nombre', response.nombre);
 
       } else {
         throw new Error('Credenciales inválidas');
@@ -64,12 +69,33 @@ login(credentials: LoginCredentials): Observable<void> {
   logout(): void {
     this.storage.remove('jwt_token');
     this.storage.remove('current_user');
+      this.storage.remove('token');
+      this.storage.remove('punto');
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
 
-  getToken(): string | null {
-    return this.storage.get('jwt_token');
+
+getToken(): string | null {
+  const token = this.storage.get('jwt_token');
+  if (!token) return null;
+
+  try {
+    const decoded: any = jwtDecode(token);
+    const now = Date.now() / 1000;
+
+    if (decoded.exp && decoded.exp > now) {
+      return token;
+    } else {
+      console.warn('⚠️ Token expirado');
+      this.logout(); // Elimina token y redirige
+      return null;
+    }
+  } catch (error) {
+    console.error('❌ Token inválido:', error);
+    this.logout();
+    return null;
+  }
   }
 
   private setToken(token: string): void {
@@ -106,3 +132,5 @@ login(credentials: LoginCredentials): Observable<void> {
 
 
 }
+
+

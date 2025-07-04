@@ -1,4 +1,27 @@
 <app-navbar></app-navbar>
+<app-modal
+  [(visible)]="showModal"
+  [headerTitle]="'Punto de servicio'"
+  [dialogStyle]="{ width: '1000px', height: '600px' }"
+  [showCancelButton]="false"
+  [acceptDisabled]="acceptDisabled"
+  (accept)="seleccionPunto()"
+>
+  <div modal-body class="p-fluid">
+    <label class="mb-4 block">Por favor seleccione el punto de servicio al que pertenece:</label>
+    <app-list-select-loader
+      [url]="urlpuntoServicio"
+      [optionLabel]="'sernom'"
+      [optionValue]="'sercod'"
+      [emitLabel]="true"
+      (selectedChange)="onSeleccion($event)"
+      class="mb-4 block"
+    ></app-list-select-loader>
+  </div>
+</app-modal>
+
+
+
 
 <main class="bg-white min-h-screen pt-5">
   <div class="max-w-6xl mx-auto">

@@ -1,73 +1,54 @@
 <app-navbar></app-navbar>
 <app-modal
-  [(visible)]="showModal"
-  headerTitle="Motivo de no autorización " class="mb-6 block"
-    [dialogStyle]="{ width: '1000px', height: '600px' }"
-  (accept)="registerHabeas()"
+  [(visible)]="showModalHabeas"
+  headerTitle="Código de verificación"
+  class="mb-6 block"
+  [dialogStyle]="{ width: '300px', height: '300px', 'z-index': '1100' }"
+  (accept)="validarCodigo()"
   (cancel)="closeModal()"
 >
-  <!-- Este div será insertado en el <ng-content select="[modal-body]"> -->
+  <div modal-body >
 
-
-    <div modal-body class="p-fluid">
-<label   class="mb-4 block">Por favor seleccione al médico con el que no aceptan el habeas data:</label>
-<app-list-select-loader
-  [url]="urlCargarLista"
-  [optionLabel]="'nombreMedico'"
-  [optionValue]="'noIdentificacion'"
-  (selectedChange)="onSeleccion($event, 'medico')"
-class="mb-4 block"
-></app-list-select-loader>
-
-
-    <label  for="motivo" class="mb-4 block">Explíquenos por qué no autoriza:</label>
-
-
-
-
-
- <app-list-select-loader
-  [url]="urlMotivosHabeas"
-  [optionLabel]="'descripcion'"
-  [optionValue]="'id_motivo'"
-  (selectedChange)="onSeleccion($event,'motivo')"
-class="mb-4 block"
-></app-list-select-loader>
-
+    <form [formGroup]="formHabeas" class="p-fluid">
+   <app-input formControlName="codigo" label="Código de verificación"
+          placeholder="Código de verificación" icon="pi pi-id-card"></app-input>
+    </form>
   </div>
-
-
-
 </app-modal>
 
-<app-modal
-  [(visible)]="showModalRegistro"
-  headerTitle="Autorización de habeas data " class="mb-6 block"
-    [dialogStyle]="{ width: '1000px', height: '600px' }"
-  (accept)="registerHabeas()"
-  (cancel)="closeModal()"
->
-  <!-- Este div será insertado en el <ng-content select="[modal-body]"> -->
-
-
-    <div modal-body class="p-fluid">
-<label   class="mb-4 block">Por favor seleccione al médico para firmar  el habeas data:</label>
-<app-list-select-loader
-  [url]="urlCargarLista"
-  [optionLabel]="'nombreMedico'"
-  [optionValue]="'noIdentificacion'"
-  (selectedChange)="onSeleccion($event, 'medico')"
-class="mb-4 block"
-></app-list-select-loader>
-
-
-    <label  for="motivo" class="mb-4 block">Medio de autorización:</label>
 
 
 
 
 
-<p-select [options]="TipoHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"   optionValue="value"  />
+
+<app-modal [(visible)]="showModal" headerTitle="Motivo de no autorización " class="mb-6 block"
+  [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)="registerHabeas('N')" (cancel)="closeModal()">
+
+
+  <div modal-body class="p-fluid">
+    <label class="mb-4 block">Por favor seleccione al médico con el que no aceptan el habeas data:</label>
+    <app-list-select-loader [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'" [emitLabel]="false"
+      (selectedChange)="onSeleccion($event, 'medico')" class="mb-4 block"></app-list-select-loader>
+    <label for="motivo" class="mb-4 block">Explíquenos por qué no autoriza:</label>
+    <app-list-select-loader [url]="urlMotivosHabeas" [optionLabel]="'descripcion'" [optionValue]="'id_motivo'" [emitLabel]="false"
+      (selectedChange)="onSeleccion($event,'motivo')" class="mb-4 block"></app-list-select-loader>
+  </div>
+</app-modal>
+<app-modal [(visible)]="showModalRegistro" headerTitle="Autorización de habeas data " class="mb-6 block"
+  [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)=" enviarSms('P')" (cancel)="closeModal()">
+
+  <div modal-body class="p-fluid">
+    <label class="mb-4 block">Por favor seleccione al médico para firmar el habeas data:</label>
+    <app-list-select-loader [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'" [emitLabel]="false"
+      (selectedChange)="onSeleccion($event, 'medico')" class="mb-4 block"></app-list-select-loader>
+
+
+    <label for="motivo" class="mb-4 block">Medio de autorización:</label>
+
+
+    <p-select [options]="TipoHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"
+      optionValue="value" />
 
 
   </div>
@@ -88,51 +69,59 @@ class="mb-4 block"
       <!-- Tipo de documento alineado con inputs -->
       <div class="field col-12 md:col-6">
         <label for="tipoDocumento">Tipo de documento</label>
-<p-select formControlName="tipoDocumento" [options]="tipoDocumentoOptions" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"   optionValue="value"  />
+        <p-select formControlName="tipoDocumento" [options]="tipoDocumentoOptions" optionLabel="label"
+          placeholder="Seleccione" class="w-full pi-id-card" optionValue="value" />
       </div>
 
       <div class="field col-12 md:col-6">
-        <app-input formControlName="identificadorUnico" label="Número de identificación" placeholder="Número de identificación" icon="pi pi-id-card"></app-input>
+        <app-input formControlName="identificadorUnico" label="Número de identificación"
+          placeholder="Número de identificación" icon="pi pi-id-card"></app-input>
       </div>
-  <div class="field col-12 md:col-6">
-        <app-input formControlName="identificacion" label="Identificador único" placeholder="Identificador único" icon="pi pi-id-card"></app-input>
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="identificacion" label="Identificador único" placeholder="Identificador único"
+          icon="pi pi-id-card"></app-input>
       </div>
 
       <div class="field col-12 md:col-6">
-        <app-input formControlName="nombresPaciente"  label="Nombres Paciente" placeholder="Nombres paciente" icon="pi pi-user"
-        ></app-input>
+        <app-input formControlName="nombresPaciente" label="Nombres Paciente" placeholder="Nombres paciente"
+          icon="pi pi-user"></app-input>
 
 
-      </div>
-
-        <div class="field col-12 md:col-6">
-        <app-input formControlName="primerApellido" label="Primer Apellido" placeholder="Primer apellido" icon="pi pi-user"></app-input>
       </div>
 
       <div class="field col-12 md:col-6">
-        <app-input formControlName="segundoApellido" label="Segundo Apellido" placeholder="Segundo apellido" icon="pi pi-user"></app-input>
-      </div>
-
-
-
-      <div class="field col-12 md:col-6">
-        <app-input formControlName="celular" label="Número celular" placeholder="Número celular" icon="pi pi-mobile"></app-input>
+        <app-input formControlName="primerApellido" label="Primer Apellido" placeholder="Primer apellido"
+          icon="pi pi-user"></app-input>
       </div>
 
       <div class="field col-12 md:col-6">
-        <app-input formControlName="fechaNacimiento" label="Fecha de nacimiento" placeholder="Fecha de nacimiento" icon="pi pi-calendar"></app-input>
+        <app-input formControlName="segundoApellido" label="Segundo Apellido" placeholder="Segundo apellido"
+          icon="pi pi-user"></app-input>
       </div>
 
 
 
       <div class="field col-12 md:col-6">
-        <app-input formControlName="correoElectronico" label="Correo Electrónico" placeholder="Correo electrónico" icon="pi pi-envelope"></app-input>
+        <app-input formControlName="celular" label="Número celular" placeholder="Número celular"
+          icon="pi pi-mobile"></app-input>
       </div>
-   <div class="field col-12 md:col-6">
-                <label for="tipoDocumento">Autorización habeas</label>
 
-<p-select formControlName="autorizacionHabeas"      (onChange)="onAutorizacionChange($event.value)"
- [options]="RespuestaHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"  />
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="fechaNacimiento" label="Fecha de nacimiento" placeholder="Fecha de nacimiento"
+          icon="pi pi-calendar"></app-input>
+      </div>
+
+
+
+      <div class="field col-12 md:col-6">
+        <app-input formControlName="correoElectronico" label="Correo Electrónico" placeholder="Correo electrónico"
+          icon="pi pi-envelope"></app-input>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="tipoDocumento">Autorización habeas</label>
+
+        <p-select formControlName="autorizacionHabeas" (onChange)="onAutorizacionChange($event.value)"
+          [options]="RespuestaHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card" />
 
 
       </div>
@@ -140,33 +129,45 @@ class="mb-4 block"
 
     </form>
 
+<div *ngFor="let estado of estadosHabeas" [ngClass]="{
+    'estado-box': true,
+    'estado-pendiente': estado.tipo === 'P',
+    'estado-aceptado': estado.tipo === 'S',
+    'estado-rechazado': estado.tipo === 'N'
+  }"
+>
+  <ng-container [ngSwitch]="estado.tipo">
+    <ng-container *ngSwitchCase="'P'">
+      <div>📌 <strong>Habeas Data pendiente:</strong></div>
+      <div>🕒 <strong>El paciente tiene un regitro pendiente con el médico:</strong> <span class="nombre-medico">{{ estado.medico }}</span></div>
+      <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+    </ng-container>
 
-      <div *ngIf="mensajeErrorHabeas" class="banner-error">
-  <i class="pi pi-times-circle icon-error"></i>
-  <span class="texto-error">{{ mensajeErrorHabeas }}</span>
+    <ng-container *ngSwitchCase="'S'">
+      <div>✅ <strong>Habeas Data aceptado:</strong></div>
+      <div>👨‍⚕️ <strong>El paciente aceptó el habeas data con el médico:</strong> <span class="nombre-medico">{{ estado.medico }}</span></div>
+      <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'N'">
+      <div>🔴 <strong>Habeas Data NO aceptado:</strong></div>
+      <div>❌ <strong>El paciente No aceptado el habeas data con el médico:</strong> <span class="nombre-medico">{{ estado.medico }}</span></div>
+      <div><strong>Motivo:</strong> {{ estado.motivo }}</div>
+      <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+    </ng-container>
+  </ng-container>
 </div>
 
-     <div *ngIf="mensajeErrorBusquedad" class="banner-error">
-  <i class="pi pi-times-circle icon-error"></i>
-  <span class="texto-error">{{ mensajeErrorBusquedad }}</span>
-</div>
-     <div *ngIf="mensajeErrorBusquedad" class="banner-error">
-  <i class="pi pi-times-circle icon-error"></i>
-  <span class="texto-error">{{ mensajeErrorBusquedad }}</span>
-</div>
-
-<div *ngIf="mensajeEstadoHabeas" class="banner-info">
-  <i class="pi pi-info-circle icon-info"></i>
-  <div class="texto-info" [innerHTML]="mensajeEstadoHabeas"></div>
-</div>
 
 
 
-      <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">
-        <button pButton type="button" label="Limpiar" class="p-button-outlined p-button-secondary w-8rem" (click)="onReset()"></button>
-        <button pButton type="submit" label="Registrar" class="p-button-primary w-8rem"   [disabled]="!registroHabilitado"
- (click)="openModalRegistrar()"></button>
-      </div>
+
+    <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">
+      <button pButton type="button" label="Limpiar" class="p-button-outlined p-button-secondary w-8rem"
+        (click)="onReset()"></button>
+      <button pButton type="submit" label="Registrar" class="p-button-primary w-8rem" [disabled]="!registroHabilitado"
+        (click)="openModalRegistrar()"></button>
+    </div>
 
   </div>
 </div>

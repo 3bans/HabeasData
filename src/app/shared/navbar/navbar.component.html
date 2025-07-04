@@ -1,16 +1,51 @@
 <p-menubar>
+  <!-- Logo izquierdo clicable -->
   <ng-template pTemplate="start">
-    <!-- Logo en el lado izquierdo -->
-    <img src="logoHptu.png" alt="Logo" class="logo"/>
+    <a [routerLink]="['/menu']">
+      <img src="logoHptu.png" alt="Logo HPTU" class="logo" />
+    </a>
   </ng-template>
+
+  <!-- Menú derecho -->
   <ng-template pTemplate="end">
-    <!-- Menú a la derecha -->
-    <ul class="p-menubar-root-list">
-      <li class="p-menuitem">
-        <img src="habeas_pac.ico" alt="Logo" class="icono"/>
+    <ul class="menu-right-container">
+      <li class="p-menuitem no-dot">
+        <div class="app-info">
+          <img src="habeas_pac.ico" alt="Icono" class="icono" />
+          <div class="text-container">
+            <div class="habeas-text">Habeas Data Pacientes</div>
+            <div *ngIf="estaLogueado" class="user-nombre">
+              <span class="user-avatar">{{ getInitials(nombreUsuario) }}</span>
+              {{ nombreUsuario }}
+            </div>
+          </div>
+        </div>
       </li>
-      <li class="p-menuitem">
-     <span class="habeas-text">Habeas Data Pacientes</span>
+
+      <!-- Botón Home -->
+      <li *ngIf="estaLogueado" class="p-menuitem no-dot">
+        <button
+          pButton
+          icon="pi pi-home"
+          class="home-button"
+          (click)="goHome()"
+          aria-label="Ir al inicio"
+          pTooltip="Ir al inicio"
+          tooltipPosition="bottom"
+        ></button>
+      </li>
+
+      <!-- Botón Logout -->
+      <li *ngIf="estaLogueado" class="p-menuitem no-dot">
+        <button
+          pButton
+          icon="pi pi-sign-out"
+          class="logout-button"
+          (click)="logout()"
+          aria-label="Cerrar sesión"
+          pTooltip="Cerrar sesión"
+          tooltipPosition="bottom"
+        ></button>
       </li>
     </ul>
   </ng-template>

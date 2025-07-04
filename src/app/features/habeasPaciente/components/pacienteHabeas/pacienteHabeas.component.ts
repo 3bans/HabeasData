@@ -5,21 +5,16 @@ import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import { PrimeNGModule } from '../../../../ui/primeng/primeng.module';
 import { InputComponent } from '../../../../shared/input-text/input-text.component';
 import { API_URLS } from '../../../../core/config/apiConfig';
-
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import {FormBuilder,FormGroup,ReactiveFormsModule,Validators} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
-import { ApiResponse, PacienteResponse } from '../../interfaces/PacienteResponse.interface';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { ApiResponse, PacienteResponse, ValidarCodigoResponse } from '../../interfaces/PacienteResponse.interface';
 import { ApiService } from '../../../../core/api/api.service';
 import { ModalComponent } from "../../../../shared/modal/modal.component";
 import { ListSelectLoaderComponent } from "../../../../shared/ListLoaderComponent/ListLoaderComponent.component";
 import { HabeasData } from '../../interfaces/HabeasData';
+import { EstadoHabeas } from '../../interfaces/estadosHabeas.interface';
 
 @Component({
   selector: 'app-paciente-habeas',
@@ -40,9 +35,11 @@ import { HabeasData } from '../../interfaces/HabeasData';
 export class PacienteHabeasComponent implements OnInit, OnDestroy {
   formHabeas!: FormGroup;
   showModal: boolean = false;
-    showModalRegistro: boolean = false;
-    registroHabilitado: boolean = false;
-
+    showModalHabeas = false;
+  showModalRegistro: boolean = false;
+  registroHabilitado: boolean = false;
+estadosHabeas: EstadoHabeas[] = [];
+  codigo!:Number;
   public urlCargarLista = "";
   public urlMotivosHabeas = "";
   private formChangesSub!: Subscription;
@@ -90,6 +87,7 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
       nombresPaciente: [{ value: '', disabled: true }, Validators.required],
       primerApellido: [{ value: '', disabled: true }, Validators.required],
       segundoApellido: [{ value: '', disabled: true }, Validators.required],
+      codigo: [{ value: '', disabled: false }],
       celular: [{ value: '', disabled: true }, Validators.required],
       fechaNacimiento: [{ value: '', disabled: true }, Validators.required],
       correoElectronico: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
@@ -143,24 +141,21 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
                 correoElectronico: datos.correo
               });
               this.formHabeas.get('autorizacionHabeas')!.enable();
-              console.log('Paciente existe (200):', datos);
-   this.registroHabilitado = true;
+              this.registroHabilitado = true;
 
             } else {
               this.mensajeErrorBusquedad = 'No se encuentra infomación del paciente';
-              console.warn('Status 200 pero “results” está vacío.');
-                 this.registroHabilitado = false;
+              this.registroHabilitado = false;
             }
           }
         },
         error: (err: HttpErrorResponse) => {
           if (err.status === 404) {
-            console.warn('No existe el paciente (404).');
             this.mensajeErrorBusquedad = 'No se encuentra infomación del paciente';
-               this.registroHabilitado = false;
+            this.registroHabilitado = false;
           } else {
             console.error('Error al consultar información del paciente:', err);
-               this.registroHabilitado = false;
+            this.registroHabilitado = false;
           }
         }
       });
@@ -171,62 +166,51 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
     this.formChangesSub.unsubscribe();
   }
   consultarHabeas(): void {
-    const tipoDocumento = this.formHabeas.get('tipoDocumento')!.value;
-    const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
-    const url = API_URLS.administradorHabeas.consultaEstadoHabeas(identificadorUnico, tipoDocumento);
+  const tipoDocumento = this.formHabeas.get('tipoDocumento')!.value;
+  const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
+  const url = API_URLS.administradorHabeas.consultaEstadoHabeas(identificadorUnico, tipoDocumento);
 
-    this.apiService.getResponse<ApiResponse<HabeasData | HabeasData[]>>(url).subscribe({
-      next: (response: HttpResponse<ApiResponse<HabeasData | HabeasData[]>>) => {
-        const data = response.body?.results;
+  this.apiService.getResponse<ApiResponse<HabeasData | HabeasData[]>>(url).subscribe({
+    next: (response: HttpResponse<ApiResponse<HabeasData | HabeasData[]>>) => {
+      const data = response.body?.results;
 
-        if (!data) {
-          console.warn('⚠️ Respuesta sin datos de habeas.');
-          return;
-        }
-
-        this.formHabeas.get('autorizacionHabeas')?.enable();
-        this.formHabeas.get('autorizacionHabeas')?.setValue('Si');
-
-        const registros = Array.isArray(data) ? data : [data];
-        const nombres = registros.map(r => r.nombreMedico);
-        const descripciones = registros.map(r => r.descripcion);
-        const fechas = registros.map(r => r.fechaRegistro || 'fecha no registrada');
-
-        if (registros.length === 1) {
-          this.mensajeEstadoHabeas = `
-<strong>El paciente NO aceptó el Habeas Data con el médico:</strong>
-  <span class="nombre-medico">${nombres[0]}</span>,
-  <strong>Motivo:</strong> <span class="nombre-medico">${descripciones[0]}</span>, <strong>Fecha:</strong> <span class="nombre-medico">${fechas[0] ?? 'fecha no registrada'}</span></p>
-`;
-        } else {
-          const mensajeListado = registros.map((_, i) => `
-    <div style="margin-bottom: 0.75rem;">
-      <span class="nombre-medico">${nombres[i]}</span><br>
-      <strong>Motivo:</strong> <span class="nombre-medico">${descripciones[i]}</span><br>
-      <strong>Fecha:</strong> <span class="nombre-medico">${fechas[i]}</span>
-    </div>
-  `).join('');
-
-          this.mensajeEstadoHabeas = `
-    El paciente <strong>NO aceptó</strong> el Habeas Data con los siguientes médicos:<br><br>
-    ${mensajeListado}
-  `;
-        }
-
-
-        this.mensajeErrorHabeas = null;
-      },
-
-      error: (err: HttpErrorResponse) => {
-        if (err.status === 404) {
-          this.mensajeErrorHabeas = 'El usuario no registra Habeas Data';
-          this.mensajeEstadoHabeas = null;
-        } else {
-          console.error('❌ Error al consultar Habeas Data:', err);
-        }
+      if (!data) {
+        console.warn('⚠️ Respuesta sin datos de habeas.');
+        return;
       }
-    });
-  }
+
+      this.formHabeas.get('autorizacionHabeas')?.enable();
+      this.formHabeas.get('autorizacionHabeas')?.setValue('Si');
+
+      const registros = Array.isArray(data) ? data : [data];
+
+
+this.estadosHabeas = registros.map((r) => ({
+  tipo: r.aprobacion as 'P' | 'S' | 'N',
+  medico: r.nombreMedico || 'Médico no especificado',
+  fecha: r.fechaRegistro || 'Fecha no registrada',
+  motivo: r.descripcion || 'Sin motivo registrado',
+}));
+
+
+
+
+
+    },
+
+    error: (err: HttpErrorResponse) => {
+      if (err.status === 404) {
+        this.mensajeErrorHabeas = 'El usuario no registra Habeas Data.';
+        this.mensajeEstadoHabeas = null;
+      } else {
+        console.error('❌ Error al consultar Habeas Data:', err);
+        this.mensajeErrorHabeas = 'Ocurrió un error al consultar Habeas Data.';
+        this.mensajeEstadoHabeas = null;
+      }
+    }
+  });
+}
+
 
 
   onAutorizacionChange(value: any) {
@@ -238,24 +222,22 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
     }
   }
 
-cargarLista() {
-  const identificacion = localStorage.getItem('token');
-  const paciente = this.formHabeas.get('identificacion')?.value;
+  cargarLista() {
+    const identificacion = localStorage.getItem('token');
+    const paciente = this.formHabeas.get('identificacion')?.value;
 
-  if (!identificacion || !paciente) {
-    console.warn('⚠️ No se puede construir la URL, faltan parámetros.');
-    return;
-  }
+    if (!identificacion || !paciente) {
+      console.warn('⚠️ No se puede construir la URL, faltan parámetros.');
+      return;
+    }
     this.urlMotivosHabeas = API_URLS.motivosHabeas;
 
-  this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(identificacion, paciente,'N');
-  console.log('URL de carga de médicos:', this.urlCargarLista);
-}
+    this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(identificacion, paciente, 'N');
+  }
 
 
 
   openModal() {
-    console.log("entra");
     this.cargarLista();
     this.showModal = true;
   }
@@ -263,13 +245,18 @@ cargarLista() {
     this.showModal = false;
   }
   onReset() {
-    this.formHabeas.reset();
-  }
+  this.formHabeas.reset();
+  this.codigo=0;
+  this.estadosHabeas = []; // <- Aquí limpias visualmente el *ngFor
+  this.showModal = false;
+  this.showModalHabeas = false;
+  this.showModalRegistro = false;
+  this.registroHabilitado = false;
+}
   onSubmit() {
     if (this.formHabeas.valid) {
       //  console.log('Enviando formulario:', this.formHabeas.value);
     } else {
-      console.log('Formulario no válido');
       this.formHabeas.markAllAsTouched();
     }
   }
@@ -284,21 +271,28 @@ cargarLista() {
   }
 
 
-  registerHabeas(): void {
+  registerHabeas(tipo:string): void {
+    this.crearCodigo();
+
+this.enviarCodigo(
+  `Suministre este codigo ${this.codigo} para autorizar tratamiento de datos. Para conocer el contenido de la autorización ir a www.hptu.org.co/privacy-policy.html`,
+  this.formHabeas.get('celular')!.value
+);
+
     const body = {
       idMedico: +this.selectedMedicoId,
       idAplicacion: 3,
-      idMotivo: this.selectedMotivoId !== null ? +this.selectedMotivoId : null,
+      idMotivo: !this.selectedMotivoId || isNaN(+this.selectedMotivoId) ? 1 : +this.selectedMotivoId,
 
       noIdentificacion: this.formHabeas.get('identificadorUnico')!.value,
       tipoId: this.formHabeas.get('tipoDocumento')!.value,
       fechaAprobacion: new Date().toISOString().substring(0, 10),
-      aprobacion: 'N',
-      idColaborador: this.identificacion,
-      nombreColaborador: 'TU_NOMBRE_USUARIO',
-      puntoAtencion: 'TU_PUNTO',
+      aprobacion: tipo,
+      idColaborador: localStorage.getItem('token'),
+      nombreColaborador: localStorage.getItem('nombre'),
+      puntoAtencion: localStorage.getItem('punto'),
       medioAutorizacion: 'Digital',
-      codigo: '',
+      codigo: this.codigo,
       historia: this.formHabeas.get('identificacion')!.value,
       correoEnviado: this.formHabeas.get('correoElectronico')!.value
     };
@@ -311,23 +305,72 @@ cargarLista() {
         next: (response: ApiResponse<any>) => {
           console.log('✅ Registro exitoso:', response);
           this.showModal = false;
-          // Aquí puedes mostrar un toast o limpiar el formulario
         },
         error: (err: HttpErrorResponse) => {
           console.error('❌ Error al registrar Habeas:', err);
-          // Mostrar mensaje al usuario si deseas
         }
       });
   }
 
 
- openModalRegistrar() {
-    console.log("entra");
-     const identificacion = localStorage.getItem('token');
-  const paciente = this.formHabeas.get('identificacion')?.value;
-  this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(identificacion!, paciente,'');
-    this.showModalRegistro = true;
+  openModalRegistrar() {
+    const identificacion = localStorage.getItem('token');
+    const paciente = this.formHabeas.get('identificacion')?.value;
+    this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(identificacion!, paciente, '');
+   this.showModalRegistro = true;
   }
 
+crearCodigo(){
+ this.codigo=Math.floor(100000 + Math.random() * 900000)
+}
 
+ enviarSms( tipo:string) {
+
+  this.registerHabeas(tipo);
+  this.showModalRegistro = false; // cierra el primer modal
+  setTimeout(() => {
+    this.showModalHabeas = true; // abre el segundo modal con un retardo
+  }, 200);
+}
+
+
+enviarCodigo(mensaje:string,  destinatario:string){
+
+ const body = {mensaje:mensaje, destinatario:destinatario}
+   this.apiService
+      .post<ApiResponse<any>>(API_URLS.enviarSMS,body )
+      .subscribe({
+        next: (response: ApiResponse<any>) => {
+          console.log('✅ Envio smsm exitoso:', response);
+
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('❌ Error al enviar el código al paciente:', err);
+        }
+      });
+}
+
+
+validarCodigo() {
+  const body = {
+    noIdentificacion: this.formHabeas.get('identificacion')?.value,
+    codigo: this.codigo
+  };
+
+this.apiService
+  .post<ValidarCodigoResponse>(API_URLS.validarCodigo, body)
+  .subscribe({
+    next: (response) => {
+      if (response.success) {
+        alert('✅ Código validado y aprobado.');
+      } else {
+        alert('⚠️ Código no válido o ya aprobado.');
+      }
+    },
+    error: (err: HttpErrorResponse) => {
+      alert('❌ Error al validar el código.');
+    }
+  });
+
+}
 }

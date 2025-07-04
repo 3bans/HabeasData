@@ -1,15 +1,29 @@
-<!-- modal.component.html -->
 <p-dialog
   [(visible)]="visible"
   [modal]="true"
-  [closable]="false"
-  [header]="headerTitle"
   [style]="dialogStyle"
+  [closable]="false"
+  [showHeader]="true"
+  [header]="headerTitle"
+  (onHide)="onClose()"
 >
   <ng-content select="[modal-body]"></ng-content>
 
   <ng-template pTemplate="footer">
-    <button pButton type="button" label="Cancelar" class="p-button-text" (click)="onClose()"></button>
-    <button pButton type="button" label="Aceptar" (click)="onAccept()"></button>
+    <div class="modal-footer">
+      <p-button
+        *ngIf="showCancelButton"
+        label="Cancelar"
+        class="p-button-secondary"
+        (onClick)="onClose()"
+      ></p-button>
+
+      <p-button
+        label="Aceptar"
+        class="p-button-primary"
+        (onClick)="onAccept()"
+        [disabled]="acceptDisabled"
+      ></p-button>
+    </div>
   </ng-template>
 </p-dialog>

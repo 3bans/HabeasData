@@ -1,4 +1,18 @@
-/* Ajusta tamaño, padding, lo que necesites */
-:host ::ng-deep .p-dialog .p-dialog-content {
+:host ::ng-deep .p-dialog {
+  width: auto !important;
+  max-width: 90vw;
+}
+
+:host ::ng-deep .p-dialog-content {
   padding: 1.5rem;
+  max-height: none;
+  overflow: visible;
+}
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem; /* separación entre botones */
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ccc;
 }

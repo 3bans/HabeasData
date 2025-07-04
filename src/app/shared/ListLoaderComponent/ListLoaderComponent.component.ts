@@ -28,6 +28,7 @@ export class ListSelectLoaderComponent implements OnInit, ControlValueAccessor {
   @Input() dataPath: string = '';
   @Input() formControl?: FormControl; // ← opcional
   @Output() selectedChange = new EventEmitter<any>();
+@Input() emitLabel: boolean = false;
 
   items: any[] = [];
   selected: any;
@@ -43,25 +44,49 @@ export class ListSelectLoaderComponent implements OnInit, ControlValueAccessor {
     }
   }
 
+
   ngOnInit(): void {
     // La carga inicial se delega a ngOnChanges
   }
 
-  private loadData(): void {
-    this.http.get<any>(this.url).subscribe({
-      next: res => {
-        this.items = this.dataPath ? res[this.dataPath] : res;
-      },
-      error: err => {
-        console.error('❌ Error cargando lista desde el backend:', err);
+private loadData(): void {
+  this.http.get<any>(this.url).subscribe({
+    next: res => {
+      let data;
+
+      if (this.dataPath) {
+        data = res[this.dataPath];
+      } else if (res?.results && Array.isArray(res.results)) {
+        data = res.results;
+      } else {
+        data = res;
       }
-    });
-  }
+
+      this.items = Array.isArray(data) ? data : [];
+
+      if (!Array.isArray(data)) {
+        console.warn('⚠️ La respuesta del backend no es un arreglo. Se recibió:', data);
+      }
+    },
+    error: err => {
+      console.error('❌ Error cargando lista desde el backend:', err);
+    }
+  });
+}
 
   onChange(event: any) {
-    this.selected = event.value;
-    this.onChangeFn(this.selected);
-    this.selectedChange.emit(this.selected);
+
+ this.selected = event.value;
+  this.onChangeFn(this.selected);
+
+  const selectedItem = this.items.find(item => item[this.optionValue] === event.value);
+
+  if (this.emitLabel) {
+    this.selectedChange.emit(selectedItem.sernom);
+ // console.log(selectedItem.sernom);
+  } else {
+    this.selectedChange.emit(this.selected); // 👈 Solo el value
+  }
   }
 
   writeValue(value: any): void {

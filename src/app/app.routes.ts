@@ -2,11 +2,30 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/autenticacion/components/login/login.component';
 import { PacienteHabeasComponent } from './features/habeasPaciente/components/pacienteHabeas/pacienteHabeas.component';
 import { ListaMenuComponent } from './features/menu/components/listaMenu/listaMenu.component';
-
+import { AuthGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
-  {path: '', component: LoginComponent},
-  {path: 'ListaMenuComponent', component: ListaMenuComponent},
-  {path: 'habeasPaciente', component: PacienteHabeasComponent}
-
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'menu',
+    component: ListaMenuComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'habeasPaciente',
+    component: PacienteHabeasComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '**',
+    redirectTo: 'login'
+  }
 ];
