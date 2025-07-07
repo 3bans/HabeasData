@@ -17,6 +17,7 @@ export class ModalComponent {
   @Input() dialogStyle: { [key: string]: any } = {};
   @Input() showCancelButton = true;
 @Input() acceptDisabled: boolean = false;
+@Input() showFooter: boolean = true;
 
   @Output() cancel = new EventEmitter<void>();
   @Output() accept = new EventEmitter<void>();

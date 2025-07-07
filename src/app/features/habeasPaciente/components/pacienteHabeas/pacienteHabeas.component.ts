@@ -14,12 +14,15 @@ import { ApiService } from '../../../../core/api/api.service';
 import { ModalComponent } from "../../../../shared/modal/modal.component";
 import { ListSelectLoaderComponent } from "../../../../shared/ListLoaderComponent/ListLoaderComponent.component";
 import { HabeasData } from '../../interfaces/HabeasData';
-import { EstadoHabeas } from '../../interfaces/estadosHabeas.interface';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-paciente-habeas',
   standalone: true,
   imports: [
+      DialogModule,
+    ButtonModule,
     CommonModule,
     ReactiveFormsModule,
     NavbarComponent,
@@ -38,8 +41,7 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
     showModalHabeas = false;
   showModalRegistro: boolean = false;
   registroHabilitado: boolean = false;
-estadosHabeas: EstadoHabeas[] = [];
-  codigo!:Number;
+  codigo!:any;
   public urlCargarLista = "";
   public urlMotivosHabeas = "";
   private formChangesSub!: Subscription;
@@ -49,6 +51,12 @@ estadosHabeas: EstadoHabeas[] = [];
   selectedMedicoId!: string;
   selectedMotivoId!: string;
   identificacion!: any;
+  mostrarModalCodigoInvalido: boolean = false;
+  mensajeCodigo: string | null = null;
+  habilitarAceptarRegistro: boolean = false;
+  habilitarAceptar: boolean = false;
+  habilitarAceptarMotivo: boolean = false;
+
   tipoDocumentoOptions = [
     { label: 'Cédula de Ciudadanía', value: 'CC' },
     { label: 'Tarjeta de Identidad', value: 'TI' },
@@ -63,7 +71,13 @@ estadosHabeas: EstadoHabeas[] = [];
     { label: 'Documento de Identificación Extranjero', value: 'DE' },
     { label: 'Sin identificación del Exterior', value: 'SX' }
   ];
-
+estadosHabeas:  {
+  tipo: 'P' | 'S' | 'N',
+  medico: string,
+  fecha: string,
+  motivo: string,
+  codigo?:string
+}[] = [];
   RespuestaHabeas = [
     { label: 'Si', value: 'Si' },
     { label: 'No', value: 'No' },
@@ -91,7 +105,8 @@ estadosHabeas: EstadoHabeas[] = [];
       celular: [{ value: '', disabled: true }, Validators.required],
       fechaNacimiento: [{ value: '', disabled: true }, Validators.required],
       correoElectronico: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-      autorizacionHabeas: [{ value: null, disabled: true }, Validators.required]
+      autorizacionHabeas: [{ value: null, disabled: true }, Validators.required],
+
     });
     this.mensajeErrorHabeas = null;
     this.mensajeErrorBusquedad = null;
@@ -115,6 +130,8 @@ estadosHabeas: EstadoHabeas[] = [];
           this.consultarHabeas();
         }
       });
+
+
   }
 
   consultarInformacionPaciente(): void {
@@ -165,17 +182,25 @@ estadosHabeas: EstadoHabeas[] = [];
   ngOnDestroy(): void {
     this.formChangesSub.unsubscribe();
   }
-  consultarHabeas(): void {
+consultarHabeas(): void {
   const tipoDocumento = this.formHabeas.get('tipoDocumento')!.value;
   const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
-  const url = API_URLS.administradorHabeas.consultaEstadoHabeas(identificadorUnico, tipoDocumento);
+
+  const url = API_URLS.administradorHabeas.consultaEstadoHabeas(
+    identificadorUnico,
+    tipoDocumento
+  );
 
   this.apiService.getResponse<ApiResponse<HabeasData | HabeasData[]>>(url).subscribe({
     next: (response: HttpResponse<ApiResponse<HabeasData | HabeasData[]>>) => {
+      console.log('✅ Respuesta completa del backend:', response);
+
       const data = response.body?.results;
 
       if (!data) {
         console.warn('⚠️ Respuesta sin datos de habeas.');
+        this.mensajeErrorHabeas = 'No se encontró información de Habeas Data.';
+        this.mensajeEstadoHabeas = null;
         return;
       }
 
@@ -183,34 +208,33 @@ estadosHabeas: EstadoHabeas[] = [];
       this.formHabeas.get('autorizacionHabeas')?.setValue('Si');
 
       const registros = Array.isArray(data) ? data : [data];
+        console.log(registros);
 
+      this.estadosHabeas = registros.map((r) => ({
+        tipo: r.aprobacion as 'P' | 'S' | 'N',
+        medico: r.nombreMedico || 'Médico no especificado',
+        fecha: r.fechaRegistro || 'Fecha no registrada',
+        motivo: r.descripcion || 'Sin motivo registrado',
+        codigo:r.codigo,
+      }));
 
-this.estadosHabeas = registros.map((r) => ({
-  tipo: r.aprobacion as 'P' | 'S' | 'N',
-  medico: r.nombreMedico || 'Médico no especificado',
-  fecha: r.fechaRegistro || 'Fecha no registrada',
-  motivo: r.descripcion || 'Sin motivo registrado',
-}));
-
-
-
-
-
+      console.log('🧾 Estados Habeas construidos:', this.estadosHabeas);
     },
 
-    error: (err: HttpErrorResponse) => {
-      if (err.status === 404) {
-        this.mensajeErrorHabeas = 'El usuario no registra Habeas Data.';
-        this.mensajeEstadoHabeas = null;
-      } else {
-        console.error('❌ Error al consultar Habeas Data:', err);
-        this.mensajeErrorHabeas = 'Ocurrió un error al consultar Habeas Data.';
-        this.mensajeEstadoHabeas = null;
-      }
-    }
+  error: (err: HttpErrorResponse) => {
+  console.log('Error HTTP recibido:', err);
+  this.estadosHabeas = []; // ← limpiar para evitar mostrar resultados anteriores
+
+  if (err.status === 404) {
+    this.mensajeErrorHabeas = 'El usuario no registra Habeas Data.';
+    this.mensajeEstadoHabeas = null;
+  } else {
+    this.mensajeErrorHabeas = 'Ocurrió un error al consultar el Habeas Data del paciente';
+    this.mensajeEstadoHabeas = null;
+  }
+}
   });
 }
-
 
 
   onAutorizacionChange(value: any) {
@@ -260,6 +284,24 @@ this.estadosHabeas = registros.map((r) => ({
       this.formHabeas.markAllAsTouched();
     }
   }
+private validarEstadoAceptar(): void {
+  this.habilitarAceptarRegistro = !!this.selectedMedicoId && !!this.formHabeas.get('medioAutorizacion')?.value;
+}
+
+private validarEstadoMedico(): void {
+  this.habilitarAceptar = !!this.selectedMedicoId ;
+
+}
+
+private validarEstadoMotivo(): void {
+  this.habilitarAceptarMotivo =  !!this.selectedMotivoId ;
+
+}
+
+private validarEstado(){
+this.habilitarAceptar=!!this.selectedMedicoId  && !!this.selectedMotivoId;
+
+}
 
   onSeleccion(value: any, type: 'medico' | 'motivo'): void {
     if (type === 'medico') {
@@ -267,24 +309,43 @@ this.estadosHabeas = registros.map((r) => ({
     } else {
       this.selectedMotivoId = value;
     }
+    this.validarEstadoAceptar();
+    this.validarEstado();
     console.log(`✅ Seleccionado ${type}:`, value);
   }
+
+  onSeleccionMedio(value: string): void {
+  this.formHabeas.get('medioAutorizacion')?.setValue(value);
+  this.validarEstadoAceptar();
+}
+
+enviarCodigos(codigo: any): void {
+  const celular = this.formHabeas.get('celular')?.value;
+
+  if (!celular) {
+    console.warn('⚠️ Celular no definido');
+    return;
+  }
+
+  const mensaje = `Suministre este código ${codigo} para autorizar tratamiento de datos. Para conocer el contenido de la autorización, visite www.hptu.org.co/privacy-policy.html`;
+this.showModalHabeas=true;
+  this.enviarCodigo(mensaje, celular);
+}
 
 
   registerHabeas(tipo:string): void {
     this.crearCodigo();
+const nombre= this.formHabeas.get('nombresPaciente')!.value + " " + this.formHabeas.get('primerApellido')!.value + " "+ this.formHabeas.get('segundoApellido')!.value + " ";
 
-this.enviarCodigo(
-  `Suministre este codigo ${this.codigo} para autorizar tratamiento de datos. Para conocer el contenido de la autorización ir a www.hptu.org.co/privacy-policy.html`,
-  this.formHabeas.get('celular')!.value
-);
+this.enviarEmail(this.codigo,this.formHabeas.get('correoElectronico')!.value ,nombre);
 
+this.enviarCodigos(this.codigo);
     const body = {
       idMedico: +this.selectedMedicoId,
       idAplicacion: 3,
       idMotivo: !this.selectedMotivoId || isNaN(+this.selectedMotivoId) ? 1 : +this.selectedMotivoId,
 
-      noIdentificacion: this.formHabeas.get('identificadorUnico')!.value,
+      noIdentificacion: this.formHabeas.get('identificacion')!.value,
       tipoId: this.formHabeas.get('tipoDocumento')!.value,
       fechaAprobacion: new Date().toISOString().substring(0, 10),
       aprobacion: tipo,
@@ -293,7 +354,7 @@ this.enviarCodigo(
       puntoAtencion: localStorage.getItem('punto'),
       medioAutorizacion: 'Digital',
       codigo: this.codigo,
-      historia: this.formHabeas.get('identificacion')!.value,
+      historia: this.formHabeas.get('identificadorUnico')!.value,
       correoEnviado: this.formHabeas.get('correoElectronico')!.value
     };
 
@@ -316,7 +377,7 @@ this.enviarCodigo(
   openModalRegistrar() {
     const identificacion = localStorage.getItem('token');
     const paciente = this.formHabeas.get('identificacion')?.value;
-    this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(identificacion!, paciente, '');
+    this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(identificacion!, paciente, 'S');
    this.showModalRegistro = true;
   }
 
@@ -326,11 +387,29 @@ crearCodigo(){
 
  enviarSms( tipo:string) {
 
+
   this.registerHabeas(tipo);
   this.showModalRegistro = false; // cierra el primer modal
   setTimeout(() => {
     this.showModalHabeas = true; // abre el segundo modal con un retardo
   }, 200);
+}
+
+
+enviarEmail(codigo:string,  emailpac:string,paciente:string){
+
+ const body = {codigo:codigo, emailpac:emailpac, paciente:paciente}
+   this.apiService
+      .post<ApiResponse<any>>(API_URLS.enviarEmail,body )
+      .subscribe({
+        next: (response: ApiResponse<any>) => {
+          console.log('✅ Envio email exitoso:', response);
+
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('❌ Error al enviar el código al paciente:', err);
+        }
+      });
 }
 
 
@@ -354,23 +433,32 @@ enviarCodigo(mensaje:string,  destinatario:string){
 validarCodigo() {
   const body = {
     noIdentificacion: this.formHabeas.get('identificacion')?.value,
-    codigo: this.codigo
+    codigo: this.formHabeas.get('codigo')?.value,
   };
 
-this.apiService
-  .post<ValidarCodigoResponse>(API_URLS.validarCodigo, body)
+ this.apiService.post<any>(API_URLS.validarCodigo, body)
   .subscribe({
     next: (response) => {
-      if (response.success) {
-        alert('✅ Código validado y aprobado.');
+      if (response.success === true) {
+        console.log('✅ Código válido');
+        this.showModalHabeas = false;
+        this.mostrarModalCodigoInvalido = false;
       } else {
-        alert('⚠️ Código no válido o ya aprobado.');
+        console.warn('⚠️ Código no válido');
+        this.mensajeCodigo = '⚠️ Código incorrecto o ya aprobado.';
+        this.mostrarModalCodigoInvalido = true;
       }
     },
     error: (err: HttpErrorResponse) => {
-      alert('❌ Error al validar el código.');
+      console.error('❌ Error al validar el código:', err);
+      this.mensajeCodigo = '❌ Error al validar el código. Intente nuevamente.';
+      this.mostrarModalCodigoInvalido = true;
     }
   });
 
 }
+
+
+
+
 }

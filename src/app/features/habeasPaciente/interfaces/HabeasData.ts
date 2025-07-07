@@ -5,4 +5,8 @@ export interface HabeasData {
   fechaRegistro: string | null;
   descripcion: string;
   aprobacion: string;
+  codigo:string;
+  idMedico:string;
 }
+
+

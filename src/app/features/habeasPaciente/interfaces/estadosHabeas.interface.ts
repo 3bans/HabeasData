@@ -3,5 +3,6 @@ export interface EstadoHabeas {
   medico: string;
   fecha: string;
   motivo?: string;
+  codigo:string;
 }
 

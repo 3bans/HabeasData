@@ -14,8 +14,9 @@ gateway: {
 
 
 administradorHabeas: {
-    consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
-      `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/existe?noIdentificacion='${identificacion}'&tipoId='${tipoDocumento}'`,
+consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
+  `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/existe?noIdentificacion=${identificacion}&tipoId=${tipoDocumento}`,
+
 
     consultaInformacion: (identificacion: string, tipoDocumento: string): string =>
       `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/paciente/buscar?tipoId='${tipoDocumento}'&numId='${identificacion}'`,
@@ -27,6 +28,8 @@ administradorHabeas: {
   },
 
     enviarSMS:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/enviar`,
+   enviarEmail:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/enviarCorreo`,
+
     motivosHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/motivos`,
     registrarHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/registrar`,
     puntoServicio:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/oracle/servicios`,

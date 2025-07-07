@@ -9,7 +9,7 @@
 >
   <ng-content select="[modal-body]"></ng-content>
 
-  <ng-template pTemplate="footer">
+  <ng-template *ngIf="showFooter" pTemplate="footer">
     <div class="modal-footer">
       <p-button
         *ngIf="showCancelButton"
