@@ -28,6 +28,13 @@ export class ApiService implements HttpGateway {
     );
   }
 
+  post1<T>(url: string, body: any, options: any = {}): Observable<any> {
+  return this.http.post(url, body, options).pipe(
+    catchError(this.handleError)
+  );
+}
+
+
   put<T>(url: string, body: any): Observable<T> {
     return this.http.put<T>(url, body).pipe(
       catchError(this.handleError)

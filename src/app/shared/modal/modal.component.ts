@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ContentChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ContentChild, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';

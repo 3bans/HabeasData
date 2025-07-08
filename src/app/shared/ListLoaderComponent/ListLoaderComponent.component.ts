@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, forwardRef, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, forwardRef, SimpleChanges, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
@@ -29,7 +29,13 @@ export class ListSelectLoaderComponent implements OnInit, ControlValueAccessor {
   @Input() formControl?: FormControl; // ← opcional
   @Output() selectedChange = new EventEmitter<any>();
 @Input() emitLabel: boolean = false;
-
+selectedValue: any;
+   public data:any;
+clearSelection() {
+  this.selectedValue = null;
+  this.data=null;
+  this.selectedChange.emit(null); // Para notificar al padre
+}
   items: any[] = [];
   selected: any;
 
@@ -52,20 +58,20 @@ export class ListSelectLoaderComponent implements OnInit, ControlValueAccessor {
 private loadData(): void {
   this.http.get<any>(this.url).subscribe({
     next: res => {
-      let data;
+
 
       if (this.dataPath) {
-        data = res[this.dataPath];
+        this.data = res[this.dataPath];
       } else if (res?.results && Array.isArray(res.results)) {
-        data = res.results;
+         this.data = res.results;
       } else {
-        data = res;
+         this.data = res;
       }
 
-      this.items = Array.isArray(data) ? data : [];
+      this.items = Array.isArray( this.data) ?  this.data : [];
 
-      if (!Array.isArray(data)) {
-        console.warn('⚠️ La respuesta del backend no es un arreglo. Se recibió:', data);
+      if (!Array.isArray( this.data)) {
+        console.warn('⚠️ La respuesta del backend no es un arreglo. Se recibió:',  this.data);
       }
     },
     error: err => {

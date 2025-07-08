@@ -3,7 +3,7 @@
   (cancel)="closeModal()" [dialogStyle]="{ width: '300px', height: 'auto', 'z-index': '1100' }">
   <div modal-body>
     <form [formGroup]="formHabeas" class="p-fluid">
-      <app-input formControlName="codigo" label="Código de verificación" placeholder="Código de verificación"
+      <app-input  formControlName="codigo" label="Código de verificación" placeholder="Código de verificación"
         icon="pi pi-id-card"></app-input>
       <div *ngIf="mensajeCodigo" class="text-danger mt-2">
         {{ mensajeCodigo }}
@@ -12,23 +12,28 @@
     </form>
   </div>
 </app-modal>
-<app-modal [(visible)]="showModal" headerTitle="Motivo de no autorización " class="mb-6 block"
+<app-modal
+ [(visible)]="showModal" headerTitle="Motivo de no autorización " class="mb-6 block"
   [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)="registerHabeas('N')" (cancel)="closeModal()" [acceptDisabled]="!habilitarAceptar"
 >
   <div modal-body class="p-fluid">
     <label class="mb-4 block">Por favor seleccione al médico con el que no aceptan el habeas data:</label>
-    <app-list-select-loader [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
+    <app-list-select-loader    #medicoNoSelectRef
+ [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
       [emitLabel]="false" (selectedChange)="onSeleccion($event, 'medico')" class="mb-4 block"></app-list-select-loader>
     <label for="motivo" class="mb-4 block">Explíquenos por qué no autoriza:</label>
-    <app-list-select-loader [url]="urlMotivosHabeas" [optionLabel]="'descripcion'" [optionValue]="'id_motivo'"
+    <app-list-select-loader      #motivoSelectRef
+     [url]="urlMotivosHabeas" [optionLabel]="'descripcion'" [optionValue]="'id_motivo'"
       [emitLabel]="false" (selectedChange)="onSeleccion($event,'motivo')" class="mb-4 block"></app-list-select-loader>
   </div>
 </app-modal>
+
 <app-modal [(visible)]="showModalRegistro" headerTitle="Autorización de habeas data " class="mb-6 block"
-  [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)=" enviarSms('P')" (cancel)="closeModal()" [acceptDisabled]="!habilitarAceptarRegistro">
+  [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)=" enviarSms('P')" (cancel)="closeModal()" [acceptDisabled]="! habilitarAceptarRegistro">
   <div modal-body class="p-fluid">
     <label class="mb-4 block">Por favor seleccione al médico para firmar el habeas data:</label>
-    <app-list-select-loader [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
+    <app-list-select-loader   medicoNoSelectRef
+ [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
       [emitLabel]="false" (selectedChange)="onSeleccion($event, 'medico')" class="mb-4 block"></app-list-select-loader>
     <label for="motivo" class="mb-4 block">Medio de autorización:</label>
     <p-select [options]="TipoHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"

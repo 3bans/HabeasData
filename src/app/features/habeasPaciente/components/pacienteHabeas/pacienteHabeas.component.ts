@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import { PrimeNGModule } from '../../../../ui/primeng/primeng.module';
@@ -55,7 +55,12 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
   mensajeCodigo: string | null = null;
   habilitarAceptarRegistro: boolean = false;
   habilitarAceptar: boolean = false;
-  habilitarAceptarMotivo: boolean = false;
+@ViewChild('motivoSelectRef', { static: false }) motivoSelectRef!: ListSelectLoaderComponent;
+@ViewChild('medicoNoSelectRef', { static: false }) medicoNoSelectRef!: ListSelectLoaderComponent;
+@ViewChild('medicoSiSelectRef', { static: false }) medicoSiSelectRef!: ListSelectLoaderComponent;
+
+
+
 
   tipoDocumentoOptions = [
     { label: 'Cédula de Ciudadanía', value: 'CC' },
@@ -265,11 +270,26 @@ consultarHabeas(): void {
     this.cargarLista();
     this.showModal = true;
   }
-  closeModal() {
-    this.showModal = false;
-  }
+
+
+closeModal() {
+  this.onReset();
+
+
+
+  this.showModal = false;
+}
+
+
   onReset() {
+setTimeout(() => {
+    this.motivoSelectRef?.clearSelection?.();
+    this.medicoNoSelectRef?.clearSelection?.();
+    this.medicoSiSelectRef?.clearSelection?.();
+  });
   this.formHabeas.reset();
+  this.selectedMotivoId="";
+this.selectedMotivoId ="";
   this.codigo=0;
   this.estadosHabeas = []; // <- Aquí limpias visualmente el *ngFor
   this.showModal = false;
@@ -285,22 +305,15 @@ consultarHabeas(): void {
     }
   }
 private validarEstadoAceptar(): void {
-  this.habilitarAceptarRegistro = !!this.selectedMedicoId && !!this.formHabeas.get('medioAutorizacion')?.value;
+  this.habilitarAceptarRegistro = !!this.selectedMedicoId && this.TipoHabeas.length >0;
 }
 
-private validarEstadoMedico(): void {
-  this.habilitarAceptar = !!this.selectedMedicoId ;
 
-}
-
-private validarEstadoMotivo(): void {
-  this.habilitarAceptarMotivo =  !!this.selectedMotivoId ;
-
-}
 
 private validarEstado(){
-this.habilitarAceptar=!!this.selectedMedicoId  && !!this.selectedMotivoId;
 
+this.habilitarAceptar=!!this.selectedMedicoId  && !!this.TipoHabeas ;
+ console.log(this.habilitarAceptar)
 }
 
   onSeleccion(value: any, type: 'medico' | 'motivo'): void {
@@ -309,12 +322,19 @@ this.habilitarAceptar=!!this.selectedMedicoId  && !!this.selectedMotivoId;
     } else {
       this.selectedMotivoId = value;
     }
-    this.validarEstadoAceptar();
-    this.validarEstado();
-    console.log(`✅ Seleccionado ${type}:`, value);
+
+    //this.validarEstadoAceptar();
+
+if (this.selectedMedicoId && this.selectedMotivoId ) {
+ this.validarEstado();
+
+}
+
+    //console.log(`✅ Seleccionado ${type}:`, value);
   }
 
   onSeleccionMedio(value: string): void {
+    console.log('entro');
   this.formHabeas.get('medioAutorizacion')?.setValue(value);
   this.validarEstadoAceptar();
 }
@@ -396,21 +416,23 @@ crearCodigo(){
 }
 
 
-enviarEmail(codigo:string,  emailpac:string,paciente:string){
+enviarEmail(codigo: string, emailpac: string, paciente: string) {
+  const body = { codigo, emailpac, paciente };
+  console.log('correo');
+  console.log(body);
 
- const body = {codigo:codigo, emailpac:emailpac, paciente:paciente}
-   this.apiService
-      .post<ApiResponse<any>>(API_URLS.enviarEmail,body )
-      .subscribe({
-        next: (response: ApiResponse<any>) => {
-          console.log('✅ Envio email exitoso:', response);
-
-        },
-        error: (err: HttpErrorResponse) => {
-          console.error('❌ Error al enviar el código al paciente:', err);
-        }
-      });
+  this.apiService
+    .post1(API_URLS.enviarEmail, body, { responseType: 'text' })
+    .subscribe({
+      next: (response: string) => {
+        console.log('✅ Envío email exitoso:', response);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('❌ Error al enviar el código al paciente:', err);
+      }
+    });
 }
+
 
 
 enviarCodigo(mensaje:string,  destinatario:string){
