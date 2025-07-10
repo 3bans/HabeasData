@@ -1,0 +1,35 @@
+<div class="table-container">
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th *ngFor="let col of columns">{{ col.header }}</th>
+        <th *ngIf="showActions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of paginatedData">
+        <td *ngFor="let col of columns">
+          {{ row[col.field] }}
+        </td>
+        <td *ngIf="showActions">
+         <button
+  pButton
+  type="button"
+  icon="pi pi-pencil"
+  class="p-button-text"
+  style="background-color: #3968a0; color: white;"
+  (click)="onAction.emit(row)">
+</button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p-paginator
+    [rows]="rows"
+    [totalRecords]="data.length"
+    [rowsPerPageOptions]="[5, 10, 20, 50]"
+    (onPageChange)="onPageChange($event)">
+  </p-paginator>
+</div>

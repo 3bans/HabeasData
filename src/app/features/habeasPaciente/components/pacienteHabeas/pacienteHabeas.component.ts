@@ -16,6 +16,8 @@ import { ListSelectLoaderComponent } from "../../../../shared/ListLoaderComponen
 import { HabeasData } from '../../interfaces/HabeasData';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import { SelectItem } from 'primeng/api';
+import { TIPO_DOCUMENTO_OPTIONS } from '../../../../shared/constants/tipo-documento.constants';
 
 @Component({
   selector: 'app-paciente-habeas',
@@ -62,20 +64,8 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
 
 
 
-  tipoDocumentoOptions = [
-    { label: 'Cédula de Ciudadanía', value: 'CC' },
-    { label: 'Tarjeta de Identidad', value: 'TI' },
-    { label: 'Registro Civil de Nacimiento', value: 'RC' },
-    { label: 'Cédula de Extranjería', value: 'CE' },
-    { label: 'Pasaporte', value: 'P' },
-    { label: 'Permiso Especial de Permanencia', value: 'PEP' },
-    { label: 'Permiso por Protección Temporal', value: 'PPT' },
-    { label: 'Salvoconducto de Permanencia', value: 'SC' },
-    { label: 'Carné Diplomático', value: 'CD' },
-    { label: 'Número de Identificación Tributaria', value: 'NIT' },
-    { label: 'Documento de Identificación Extranjero', value: 'DE' },
-    { label: 'Sin identificación del Exterior', value: 'SX' }
-  ];
+tipoDocumentoOptions: SelectItem[] = TIPO_DOCUMENTO_OPTIONS;
+
 estadosHabeas:  {
   tipo: 'P' | 'S' | 'N',
   medico: string,
@@ -339,7 +329,7 @@ if (this.selectedMedicoId && this.selectedMotivoId ) {
   this.validarEstadoAceptar();
 }
 
-enviarCodigos(codigo: any): void {
+ enviarCodigos(codigo: any): void {
   const celular = this.formHabeas.get('celular')?.value;
 
   if (!celular) {
@@ -348,18 +338,22 @@ enviarCodigos(codigo: any): void {
   }
 
   const mensaje = `Suministre este código ${codigo} para autorizar tratamiento de datos. Para conocer el contenido de la autorización, visite www.hptu.org.co/privacy-policy.html`;
-this.showModalHabeas=true;
+  this.showModalHabeas=true;
   this.enviarCodigo(mensaje, celular);
 }
 
 
   registerHabeas(tipo:string): void {
     this.crearCodigo();
+
+    if (tipo=='P'){
 const nombre= this.formHabeas.get('nombresPaciente')!.value + " " + this.formHabeas.get('primerApellido')!.value + " "+ this.formHabeas.get('segundoApellido')!.value + " ";
 
 this.enviarEmail(this.codigo,this.formHabeas.get('correoElectronico')!.value ,nombre);
 
 this.enviarCodigos(this.codigo);
+    }
+
     const body = {
       idMedico: +this.selectedMedicoId,
       idAplicacion: 3,

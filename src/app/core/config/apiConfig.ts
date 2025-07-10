@@ -33,5 +33,7 @@ consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
     motivosHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/motivos`,
     registrarHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/registrar`,
     puntoServicio:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/oracle/servicios`,
-    validarCodigo:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/validarCodigo`
+    validarCodigo:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/validarCodigo`,
+    cargarListaUsuarios:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/listaUsuario`
+
 }

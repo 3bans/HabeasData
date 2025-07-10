@@ -3,6 +3,7 @@ import { LoginComponent } from './features/autenticacion/components/login/login.
 import { PacienteHabeasComponent } from './features/habeasPaciente/components/pacienteHabeas/pacienteHabeas.component';
 import { ListaMenuComponent } from './features/menu/components/listaMenu/listaMenu.component';
 import { AuthGuard } from './core/auth/auth.guard';
+import { UsuariosComponentComponent } from './features/adminusuarios/components/UsuariosComponent/UsuariosComponent.component';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,13 @@ export const routes: Routes = [
     component: PacienteHabeasComponent,
     canActivate: [AuthGuard]
   },
+
+{
+    path: 'adminUsuario',
+    component: UsuariosComponentComponent,
+    canActivate: [AuthGuard]
+  },
+
   {
     path: '**',
     redirectTo: 'login'

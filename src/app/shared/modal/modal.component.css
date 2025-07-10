@@ -16,3 +16,11 @@
   padding-top: 1rem;
   border-top: 1px solid #ccc;
 }
+:host ::ng-deep .p-dialog {
+  width: 90vw !important;
+  max-width: 1100px !important;
+}
+
+:host ::ng-deep .p-dialog-content {
+  overflow-x: auto;
+}

@@ -1,0 +1,33 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.custom-table thead {
+  background-color: #f4f4f4;
+}
+
+.custom-table th, .custom-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.table-container {
+  margin: 1rem;
+}
+
+p-paginator {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+.btn-pencil-white .pi {
+  color: white !important;
+}
