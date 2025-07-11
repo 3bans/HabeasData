@@ -86,13 +86,16 @@ consultarUsuarios(): void {
     });
 }
 
+onReset(){
+
+}
 
 openModel(){
     this.showModalRegistro=true;
 
 }
 
-onSubmit(){}
+Registrar(){}
 
 closeModal(){
   this.showModalRegistro=false;

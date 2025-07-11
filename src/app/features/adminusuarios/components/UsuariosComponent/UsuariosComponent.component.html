@@ -5,13 +5,13 @@
   [(visible)]="showModalRegistro"
   headerTitle="Registro colaboradores"
   [showFooter]="false"
-  [dialogStyle]="{ width: '90vw', maxWidth: '1100px', height: '40vh' }"
+  [dialogStyle]="{ width: '90vw', maxWidth: '1100px', height: '45vh' }"
   (cancel)="closeModal()"
 >
   <div modal-body class="p-fluid">
     <form
       [formGroup]="formRegistroUsuario"
-      (ngSubmit)="onSubmit()"
+
       class="formgrid grid"
       style="width: 100%;"
     >
@@ -73,9 +73,9 @@
         ></p-select>
       </div>
        <div class="field col-12 md:col-6">
-        <label for="nombreRol">Rol</label>
+        <label for="RolUsuario">Rol</label>
         <p-select
-          formControlName="nombreRol"
+          formControlName="RolUsuario"
           [options]="rol"
           optionLabel="label"
           optionValue="value"
@@ -85,6 +85,13 @@
       </div>
 
     </form>
+
+    <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">
+      <button pButton type="button" label="Limpiar" class="p-button-outlined p-button-secondary w-8rem"
+        (click)="onReset()"></button>
+      <button pButton type="submit" label="Registrar" class="p-button-primary w-8rem"
+        (click)="Registrar()"></button>
+    </div>
   </div>
 </app-modal>
 
