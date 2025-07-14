@@ -59,7 +59,13 @@
   transition: all 0.3s ease;
   color: #495057;
 }
-
+.custom-table td {
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.2;
+  max-width: 200px; /* o el valor que mejor te funcione */
+}
 /* Estilos generales para p-select */
 .p-select {
   width: 100%;

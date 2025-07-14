@@ -1,33 +1,58 @@
 import { CommonModule } from '@angular/common';
-import {  Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule } from 'primeng/paginator';
-
-
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-generic-table-component',
   standalone: true,
-  imports: [CommonModule, ButtonModule, DialogModule, PaginatorModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonModule,
+    DialogModule,
+    PaginatorModule,
+    InputTextModule,
+    TableModule
+  ],
   templateUrl: './GenericTableComponent.component.html',
   styleUrls: ['./GenericTableComponent.component.css']
 })
-export class GenericTableComponentComponent {
+export class GenericTableComponentComponent implements OnChanges {
   @Input() columns: { field: string; header: string }[] = [];
-@Input() data: any[] = [];
+  @Input() data: any[] = [];
   @Input() showActions = false;
   @Input() actionLabel: string = 'Editar';
 
   @Output() onAction = new EventEmitter<any>();
 
-  // Paginación
   paginatedData: any[] = [];
+  originalData: any[] = [];
+  filters: { [key: string]: string } = {};
+
   rows: number = 10;
   first: number = 0;
 
   ngOnChanges(): void {
-    this.updatePaginatedData();
+    // Inicializa filtros con claves vacías para todas las columnas
+    this.columns.forEach(col => {
+      if (!this.filters[col.field]) {
+        this.filters[col.field] = '';
+      }
+    });
+
+    this.originalData = [...this.data];
+    this.applyFilters();
   }
 
   onPageChange(event: any): void {
@@ -37,8 +62,26 @@ export class GenericTableComponentComponent {
   }
 
   private updatePaginatedData(): void {
-    if (this.data) {
-      this.paginatedData = this.data.slice(this.first, this.first + this.rows);
+    const start = this.first;
+    const end = start + this.rows;
+    this.paginatedData = this.data.slice(start, end);
+  }
+
+  applyFilters(): void {
+    let filtered = [...this.originalData];
+
+    // Aplica filtro por cada campo definido
+    for (const key in this.filters) {
+      const term = this.filters[key]?.trim().toLowerCase();
+      if (term) {
+        filtered = filtered.filter(item =>
+          item[key]?.toString().toLowerCase().includes(term)
+        );
+      }
     }
+
+    this.data = filtered;
+    this.first = 0;
+    this.updatePaginatedData();
   }
 }

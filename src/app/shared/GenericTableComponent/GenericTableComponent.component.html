@@ -1,31 +1,48 @@
 <div class="table-container">
   <table class="custom-table">
     <thead>
+      <!-- Encabezados -->
       <tr>
         <th *ngFor="let col of columns">{{ col.header }}</th>
         <th *ngIf="showActions">Actions</th>
       </tr>
+
+      <!-- Filtros por columna -->
+      <tr>
+        <th *ngFor="let col of columns">
+          <input
+            type="text"
+            pInputText
+            placeholder="Filtrar {{ col.header }}"
+            [(ngModel)]="filters[col.field]"
+            (ngModelChange)="applyFilters()"
+            class="p-inputtext-sm"
+          />
+        </th>
+        <th *ngIf="showActions"></th>
+      </tr>
     </thead>
+
     <tbody>
       <tr *ngFor="let row of paginatedData">
         <td *ngFor="let col of columns">
           {{ row[col.field] }}
         </td>
         <td *ngIf="showActions">
-         <button
-  pButton
-  type="button"
-  icon="pi pi-pencil"
-  class="p-button-text"
-  style="background-color: #3968a0; color: white;"
-  (click)="onAction.emit(row)">
-</button>
-
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-text"
+            style="background-color: #3968a0; color: white;"
+            (click)="onAction.emit(row)">
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
 
+  <!-- Paginador -->
   <p-paginator
     [rows]="rows"
     [totalRecords]="data.length"

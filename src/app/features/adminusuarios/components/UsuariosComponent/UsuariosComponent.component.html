@@ -1,9 +1,9 @@
 <app-navbar></app-navbar>
 
-
+<!-- MODAL DE REGISTRO -->
 <app-modal
   [(visible)]="showModalRegistro"
-  headerTitle="Registro colaboradores"
+  [headerTitle]="usuarioSeleccionado ? 'Editar colaborador' : 'Registro colaboradores'"
   [showFooter]="false"
   [dialogStyle]="{ width: '90vw', maxWidth: '1100px', height: '45vh' }"
   (cancel)="closeModal()"
@@ -11,14 +11,13 @@
   <div modal-body class="p-fluid">
     <form
       [formGroup]="formRegistroUsuario"
-
       class="formgrid grid"
       style="width: 100%;"
     >
       <div class="field col-12 md:col-6">
         <label for="tipoDocumento">Tipo de documento</label>
         <p-select
-          formControlName="tipoDocumento"
+          formControlName="tipoIdUsuario"
           [options]="tipoDocumentoOptions"
           optionLabel="label"
           optionValue="value"
@@ -29,15 +28,16 @@
 
       <div class="field col-12 md:col-6">
         <app-input
-          formControlName="identificacion"
+          formControlName="idUsuario"
           label="Número de documento"
           placeholder="Número de documento"
           icon="pi pi-id-card"
         ></app-input>
       </div>
-         <div class="field col-12 md:col-12">
+
+      <div class="field col-12">
         <app-input
-          formControlName="nombrecompleto"
+          formControlName="nombre"
           label="Nombre completo"
           placeholder="Nombre completo"
           icon="pi pi-id-card"
@@ -53,73 +53,79 @@
         ></app-input>
       </div>
 
-  <div class="field col-12 md:col-6">
+      <div class="field col-12 md:col-6">
         <app-input
           formControlName="seccion"
           label="Sección"
-          placeholder="seccion"
+          placeholder="Sección"
           icon="pi pi-id-card"
         ></app-input>
       </div>
- <div class="field col-12 md:col-6">
-        <label for="puntoServicio">Punto de servicio</label>
-        <p-select
-          formControlName="puntoServicio"
-          [options]="puntoAtencion"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Seleccione"
-          class="w-full pi-id-card"
-        ></p-select>
-      </div>
-       <div class="field col-12 md:col-6">
-        <label for="RolUsuario">Rol</label>
-        <p-select
-          formControlName="RolUsuario"
-          [options]="rol"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Seleccione"
-          class="w-full pi-id-card"
-        ></p-select>
+
+      <div class="field col-12 md:col-6">
+        <label for="rol">Rol usuario</label>
+        <app-list-select-loader
+          [url]="urlCargarRol"
+          [optionLabel]="'sernom'"
+          [optionValue]="'id'"
+          [emitLabel]="false"
+          (selectedChange)="onSeleccion($event,'rolId')"
+          class="mb-4 block"
+        ></app-list-select-loader>
       </div>
 
+      <div class="field col-12 md:col-6">
+        <label for="puntoAtencion">Punto de servicio</label>
+        <app-list-select-loader
+          [url]="urlCargarPunto"
+          [optionLabel]="'sernom'"
+          [optionValue]="'id'"
+          [emitLabel]="true"
+          (selectedChange)="onSeleccion($event,'puntoAtencion')"
+          class="mb-4 block"
+        ></app-list-select-loader>
+      </div>
     </form>
 
     <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">
-      <button pButton type="button" label="Limpiar" class="p-button-outlined p-button-secondary w-8rem"
-        (click)="onReset()"></button>
-      <button pButton type="submit" label="Registrar" class="p-button-primary w-8rem"
-        (click)="Registrar()"></button>
+      <button
+        pButton
+        type="button"
+        label="Limpiar"
+        class="p-button-outlined p-button-secondary w-8rem"
+        (click)="onReset()"
+      ></button>
+    <button
+  pButton
+  type="submit"
+  [label]="usuarioSeleccionado ? 'Guardar cambios' : 'Registrar'"
+  class="p-button-primary w-8rem"
+  [disabled]="formRegistroUsuario.invalid"
+  (click)="usuarioSeleccionado ? guardarCambios() : RegistrarUsuario()"
+></button>
     </div>
   </div>
 </app-modal>
 
-
-
-
-
-
+<!-- CONTENEDOR DE TABLA -->
 <div class="flex justify-content-center mt-8">
-  <div class="usuarios-container surface-card p-5 shadow-3 border-round-xl w-full md:w-10 lg:w-8 xl:w-7">
-
-    <div class="tabla-wrapper">
+  <div class="usuarios-container surface-card p-5 shadow-3 border-round-xl w-full md:w-11 lg:w-10 xl:w-8">
+    <div class="tabla-wrapper tabla-ajustada">
       <div class="grid mb-4 align-items-center">
         <div class="col-12 md:col-6">
           <h2 class="text-2xl font-semibold m-0">Gestión de Usuarios</h2>
         </div>
         <div class="col-12 md:col-6 text-right">
-       <button
-  pButton
-  pRipple
-  type="button"
-  class="p-button-sm text-white border-none"
-  style="background-color: #97b47c; color: white;"
-  (click)="openModel()"
->
-  <i class="pi pi-plus mr-2"></i> Crear Usuario
-</button>
-
+          <button
+            pButton
+            pRipple
+            type="button"
+            class="p-button-sm text-white border-none"
+            style="background-color: #97b47c; color: white;"
+            (click)="openModel()"
+          >
+            <i class="pi pi-plus mr-2"></i> Crear Usuario
+          </button>
         </div>
       </div>
 
@@ -128,8 +134,8 @@
           [columns]="columns"
           [data]="listaUsuarios"
           [showActions]="true"
-          (onAction)="editarUsuario($event)">
-        </app-generic-table-component>
+          (onAction)="editarUsuario($event)"
+        ></app-generic-table-component>
       </ng-container>
 
       <div *ngIf="!listaUsuarios?.length" class="mensaje-cargando">

@@ -29,11 +29,14 @@ consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
 
     enviarSMS:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/enviar`,
    enviarEmail:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/enviarCorreo`,
-
+    cargarRoles:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/roles/activos`,
+     cargarPuntoServicio:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/puntoServicio/activos`,
     motivosHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/motivos`,
     registrarHabeas:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/registrar`,
     puntoServicio:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/oracle/servicios`,
     validarCodigo:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/validarCodigo`,
-    cargarListaUsuarios:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/listaUsuario`
+    cargarListaUsuarios:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/listaUsuario`,
+     crearUsuario:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/crear`
+
 
 }

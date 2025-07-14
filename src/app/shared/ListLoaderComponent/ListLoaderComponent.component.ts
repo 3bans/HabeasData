@@ -64,8 +64,10 @@ private loadData(): void {
         this.data = res[this.dataPath];
       } else if (res?.results && Array.isArray(res.results)) {
          this.data = res.results;
+         console.log(   this.data );
       } else {
          this.data = res;
+          console.log(   this.data );
       }
 
       this.items = Array.isArray( this.data) ?  this.data : [];
