@@ -4,6 +4,7 @@ import { PacienteHabeasComponent } from './features/habeasPaciente/components/pa
 import { ListaMenuComponent } from './features/menu/components/listaMenu/listaMenu.component';
 import { AuthGuard } from './core/auth/auth.guard';
 import { UsuariosComponentComponent } from './features/adminusuarios/components/UsuariosComponent/UsuariosComponent.component';
+import { MedicosComponent } from './features/adminMedicos/components/Medicos/Medicos.component';
 
 export const routes: Routes = [
   {
@@ -31,7 +32,11 @@ export const routes: Routes = [
     component: UsuariosComponentComponent,
     canActivate: [AuthGuard]
   },
-
+{
+    path: 'admMed',
+    component:MedicosComponent ,
+    canActivate: [AuthGuard]
+  },
   {
     path: '**',
     redirectTo: 'login'

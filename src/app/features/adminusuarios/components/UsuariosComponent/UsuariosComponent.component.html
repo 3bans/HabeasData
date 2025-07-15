@@ -1,4 +1,5 @@
 <app-navbar></app-navbar>
+<p-toast></p-toast>
 
 <!-- MODAL DE REGISTRO -->
 <app-modal
@@ -63,8 +64,10 @@
       </div>
 
       <div class="field col-12 md:col-6">
-        <label for="rol">Rol usuario</label>
+        <label for="rolId">Rol usuario</label>
         <app-list-select-loader
+          formControlName="rolId"
+
           [url]="urlCargarRol"
           [optionLabel]="'sernom'"
           [optionValue]="'id'"
@@ -77,6 +80,8 @@
       <div class="field col-12 md:col-6">
         <label for="puntoAtencion">Punto de servicio</label>
         <app-list-select-loader
+          formControlName="puntoAtencion"
+
           [url]="urlCargarPunto"
           [optionLabel]="'sernom'"
           [optionValue]="'id'"
@@ -91,14 +96,14 @@
       <button
         pButton
         type="button"
-        label="Limpiar"
+        label="Cerrar"
         class="p-button-outlined p-button-secondary w-8rem"
         (click)="onReset()"
       ></button>
     <button
   pButton
   type="submit"
-  [label]="usuarioSeleccionado ? 'Guardar cambios' : 'Registrar'"
+  [label]="usuarioSeleccionado ? 'Guardar' : 'Registrar'"
   class="p-button-primary w-8rem"
   [disabled]="formRegistroUsuario.invalid"
   (click)="usuarioSeleccionado ? guardarCambios() : RegistrarUsuario()"

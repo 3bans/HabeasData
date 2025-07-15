@@ -6,6 +6,7 @@ import Aura from '@primeng/themes/lara';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { jwtInterceptor } from './core/auth/auth.interceptor'; // Asegúrate de la ruta correcta
+import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +25,7 @@ export const appConfig: ApplicationConfig = {
           cssLayer: false,
         }
       }
-    })
+    }),
+    MessageService,
   ]
 };

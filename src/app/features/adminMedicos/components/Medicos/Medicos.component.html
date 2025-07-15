@@ -1,0 +1,14 @@
+<app-navbar></app-navbar>
+<p-toast></p-toast>
+
+
+<div class="flex justify-content-end mt-4">
+  <button pButton label="Nuevo Médico" icon="pi pi-plus" (click)="abrirModal()"></button>
+</div>
+
+<app-generic-table-component
+  [columns]="columns"
+  [data]="listaMedicos"
+  [showActions]="true"
+  (onAction)="editarMedico($event)"
+></app-generic-table-component>

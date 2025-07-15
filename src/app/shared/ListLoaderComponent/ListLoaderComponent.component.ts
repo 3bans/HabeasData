@@ -82,28 +82,27 @@ private loadData(): void {
   });
 }
 
-  onChange(event: any) {
+onChange(event: any): void {
+  const value = event.value;
+  this.selectedValue = value;
+  this.onChangeFn(value); // ← notifica al form
 
- this.selected = event.value;
-  this.onChangeFn(this.selected);
-
-  const selectedItem = this.items.find(item => item[this.optionValue] === event.value);
+  const selectedItem = this.items.find(item => item[this.optionValue] === value);
 
   if (this.emitLabel) {
-    this.selectedChange.emit(selectedItem.sernom);
- // console.log(selectedItem.sernom);
+    this.selectedChange.emit(selectedItem?.[this.optionLabel]);
   } else {
-    this.selectedChange.emit(this.selected); // 👈 Solo el value
+    this.selectedChange.emit(value);
   }
-  }
+}
 
-  writeValue(value: any): void {
-    this.selected = value;
-  }
+writeValue(value: any): void {
+  this.selectedValue = value; // ← actualiza la selección visual
+}
 
-  registerOnChange(fn: any): void {
-    this.onChangeFn = fn;
-  }
+registerOnChange(fn: any): void {
+  this.onChangeFn = fn;
+}
 
   registerOnTouched(fn: any): void {
     this.onTouchedFn = fn;

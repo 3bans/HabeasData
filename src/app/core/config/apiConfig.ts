@@ -36,7 +36,10 @@ consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
     puntoServicio:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/oracle/servicios`,
     validarCodigo:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/validarCodigo`,
     cargarListaUsuarios:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/listaUsuario`,
-     crearUsuario:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/crear`
-
+     crearUsuario:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/crear`,
+actualizarUsuario:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/actualizar`,
+  registrarMedico: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/medicos/registrar`,
+  actualizarMedico: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/medicos/actualizar`,
+  cargarListaEspecialistas: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/medicos/activos`
 
 }

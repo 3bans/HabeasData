@@ -1,8 +1,10 @@
 <p-select
+  [(ngModel)]="selectedValue"
   [options]="items"
   [optionLabel]="optionLabel"
   [optionValue]="optionValue"
   [placeholder]="placeholder"
   (onChange)="onChange($event)"
-class="w-full pi-id-card"
+  class="w-full"
 />
+
