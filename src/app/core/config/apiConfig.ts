@@ -37,9 +37,15 @@ consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
     validarCodigo:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/validarCodigo`,
     cargarListaUsuarios:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/listaUsuario`,
      crearUsuario:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/crear`,
-actualizarUsuario:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/actualizar`,
+  actualizarUsuario:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/actualizar`,
   registrarMedico: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/medicos/registrar`,
   actualizarMedico: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/medicos/actualizar`,
-  cargarListaEspecialistas: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/medicos/activos`
+  cargarListaEspecialistas: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/medicos/activos`,
+  cargarListaSecretarias: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/secretarias`,
+  asignacionMedicos:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/asignacionMedicos/asignar`,
+   listaMedicosAsignados:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/asignacionMedicos/medicoSecretaria/`,
+  eliminarAsignacionMedico: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/asignacionMedicos/secretariAsignada`
+
+
 
 }

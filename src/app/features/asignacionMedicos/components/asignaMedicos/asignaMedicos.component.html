@@ -1,0 +1,111 @@
+<app-navbar></app-navbar>
+<p-toast></p-toast>
+
+<app-modal
+  [(visible)]="showModalVerMedicos"
+  [headerTitle]="'Médicos Asignados'"
+  [showFooter]="false"
+  [dialogStyle]="{ width: '90vw', maxWidth: '800px' }"
+  (cancel)="showModalVerMedicos = false"
+>
+  <div modal-body class="p-fluid">
+    <h3 class="text-xl mb-3">Médicos asignados a {{ secretariaSeleccionada?.nombre }}</h3>
+
+    <ul class="list-none p-0">
+      <li *ngFor="let medico of medicosAsignados" class="mb-2">
+        <div class="p-3 border-1 border-round border-gray-300 shadow-sm flex justify-between align-items-center">
+          <div>
+            <strong>{{ medico.nombreCompleto }}</strong><br />
+            Especialidad: {{ medico.especialidad }}<br />
+            Consultorio: {{ medico.consultorio }}
+          </div>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-sm p-button-danger ml-3"
+            (click)="eliminarAsignacionMedico(medico.idMedico)"
+            title="Eliminar asignación"
+          ></button>
+        </div>
+      </li>
+    </ul>
+
+    <div *ngIf="!medicosAsignados.length" class="text-center text-gray-500 mt-3">
+      No hay médicos asignados a esta secretaria.
+    </div>
+  </div>
+</app-modal>
+
+
+
+<app-modal
+  [(visible)]="showModal"
+  [headerTitle]="'Asignar Médico'"
+  [showFooter]="false"
+  [dialogStyle]="{ width: '90vw', maxWidth: '800px', height: '25vh' }"
+  (cancel)="cerrarModal()"
+>
+  <div modal-body class="p-fluid">
+    <div class="flex flex-column align-items-center justify-content-center gap-2 p-2">
+      <h2 class="text-2xl font-semibold text-center">Selecciona los Especialistas</h2>
+
+      <p-multiselect
+        [(ngModel)]="medicosSeleccionados"
+        [options]="listaMedicos"
+        optionLabel="nombreCompleto"
+        placeholder="Seleccionar médicos"
+        [maxSelectedLabels]="3"
+        class="w-full md:w-24rem"
+      ></p-multiselect>
+    </div>
+
+   <div class="flex justify-content-end gap-3 mt-8 pt-6 border-top-1 surface-border">
+      <button
+        pButton
+        type="button"
+        label="Cancelar"
+        class="p-button-outlined p-button-secondary w-8rem"
+        (click)="cerrarModal()"
+      ></button>
+
+      <button
+        pButton
+        type="submit"
+        label="Guardar"
+        class="p-button-primary w-8rem"
+        (click)="GuardarasignarMedico()"
+      ></button>
+    </div>
+  </div>
+</app-modal>
+
+
+
+<div class="flex justify-content-center mt-8">
+  <div class="usuarios-container surface-card p-5 shadow-3 border-round-xl w-full md:w-11 lg:w-10 xl:w-8">
+    <div class="tabla-wrapper tabla-ajustada">
+      <div class="grid mb-4 align-items-center">
+        <div class="col-12 md:col-6">
+          <h2 class="text-2xl font-semibold m-0">Lista de Secretarias</h2>
+        </div>
+      </div>
+
+      <ng-container *ngIf="listaSecretarias?.length">
+        <app-generic-table-component
+          [columns]="columns"
+          [data]="listaSecretarias"
+          [showActions]="true"
+          (onAction)="asignarMedico($event)"
+
+        ></app-generic-table-component>
+
+
+      </ng-container>
+
+      <div *ngIf="!listaSecretarias?.length" class="mensaje-cargando">
+        No hay secretarias disponibles o se están cargando...
+      </div>
+    </div>
+  </div>
+</div>

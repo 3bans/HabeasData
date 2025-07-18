@@ -11,11 +11,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ApiService } from '../../../../core/api/api.service';
 import { ToastHelperService } from '../../../../shared/helpers/ToastHelperService';
 import { Medico } from '../../interfaces/Medico.interface';
+import { InputComponent } from '../../../../shared/input-text/input-text.component';
+import { ColumnDefinition } from '../../../../shared/interfaces/column.interface';
 
 @Component({
   selector: 'app-medicos',
   standalone: true,
-  imports: [CommonModule, DialogModule, ReactiveFormsModule, ModalComponent, PrimeNGModule, GenericTableComponentComponent],
+  imports: [CommonModule,InputComponent, DialogModule, ReactiveFormsModule, ModalComponent, PrimeNGModule, GenericTableComponentComponent, NavbarComponent, Toast],
   templateUrl: './Medicos.component.html',
   styleUrls: ['./Medicos.component.css']
 })
@@ -25,13 +27,26 @@ export class MedicosComponent {
   listaMedicos: Medico[] = [];
   medicoSeleccionado: Medico | null = null;
 
-  columns = [
-    { field: 'identificacion', header: 'Identificación' },
-    { field: 'nombreCompleto', header: 'Nombre' },
-    { field: 'estado', header: 'Estado' },
-    { field: 'especialidad', header: 'Especialidad' },
-    { field: 'consultorio', header: 'Consultorio' },
-  ];
+columns: ColumnDefinition[] = [
+  { field: 'identificacion', header: 'Identificación' },
+  { field: 'nombreCompleto', header: 'Nombre' },
+  { field: 'estado', header: 'Estado' },
+  { field: 'especialidad', header: 'Especialidad' },
+  { field: 'consultorio', header: 'Consultorio' },
+  {
+    header: 'Acciones',
+    type: 'buttons', // <-- literal exacto
+    buttons: [
+      {
+        icon: 'pi pi-pencil',
+        action: 'editar',
+        class: 'btn-pencil-icon' // clase CSS azul definida en el global o local
+      }
+    ]
+  }
+];
+
+
 
   constructor(
     private fb: FormBuilder,
@@ -46,10 +61,10 @@ export class MedicosComponent {
 
   private initForm(): void {
     this.formMedico = this.fb.group({
-      idMedico: [null],
+      idMedico:[null],
       identificacion: [null, Validators.required],
       nombreCompleto: [null, Validators.required],
-      estado: ['ACTIVO', Validators.required],
+      estado: ['Activo', Validators.required],
       especialidad: [null, Validators.required],
       consultorio: [null, Validators.required],
     });
@@ -62,11 +77,14 @@ export class MedicosComponent {
     });
   }
 
-  editarMedico(medico: Medico): void {
-    this.medicoSeleccionado = medico;
-    this.formMedico.patchValue(medico);
+ editarMedico(event: { action: string, row: Medico }): void {
+  if (event?.action === 'editar' && event?.row) {
+    this.medicoSeleccionado = event.row;
+    this.formMedico.patchValue(event.row);
     this.showModal = true;
   }
+}
+
 
   abrirModal(): void {
     this.medicoSeleccionado = null;
@@ -76,7 +94,7 @@ export class MedicosComponent {
 
   guardarMedico(): void {
     const medico = this.formMedico.value;
-
+console.log(medico.id);
     const handler = this.medicoSeleccionado
       ? this.apiService.put(API_URLS.actualizarMedico, medico)
       : this.apiService.post(API_URLS.registrarMedico, medico);

@@ -1,48 +1,50 @@
 <div class="table-container">
   <table class="custom-table">
     <thead>
-      <!-- Encabezados -->
       <tr>
         <th *ngFor="let col of columns">{{ col.header }}</th>
-        <th *ngIf="showActions">Actions</th>
       </tr>
 
-      <!-- Filtros por columna -->
       <tr>
         <th *ngFor="let col of columns">
-          <input
-            type="text"
-            pInputText
-            placeholder="Filtrar {{ col.header }}"
-            [(ngModel)]="filters[col.field]"
-            (ngModelChange)="applyFilters()"
-            class="p-inputtext-sm"
-          />
+          <ng-container *ngIf="isFieldColumn(col)">
+            <input
+              type="text"
+              pInputText
+              placeholder="Filtrar {{ col.header }}"
+              [(ngModel)]="filters[col.field]"
+              (ngModelChange)="applyFilters()"
+              class="p-inputtext-sm w-full"
+            />
+          </ng-container>
         </th>
-        <th *ngIf="showActions"></th>
       </tr>
     </thead>
 
     <tbody>
       <tr *ngFor="let row of paginatedData">
         <td *ngFor="let col of columns">
-          {{ row[col.field] }}
-        </td>
-        <td *ngIf="showActions">
-          <button
-            pButton
-            type="button"
-            icon="pi pi-pencil"
-            class="p-button-text"
-            style="background-color: #3968a0; color: white;"
-            (click)="onAction.emit(row)">
-          </button>
+          <ng-container *ngIf="isFieldColumn(col)">
+            {{ row[col.field] }}
+          </ng-container>
+
+          <ng-container *ngIf="isButtonColumn(col)">
+  <div class="btn-group">
+    <button
+      *ngFor="let btn of col.buttons"
+      type="button"
+      [class]="btn.class || 'p-button-sm p-button-secondary'"
+      (click)="emitAction(btn.action, row)">
+      <i [class]="btn.icon ?? 'pi pi-pencil'"></i>
+    </button>
+  </div>
+</ng-container>
+
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- Paginador -->
   <p-paginator
     [rows]="rows"
     [totalRecords]="data.length"

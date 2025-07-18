@@ -12,6 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
+import { ColumnDefinition, FieldColumn, ButtonColumn } from '../interfaces/column.interface';
 
 @Component({
   selector: 'app-generic-table-component',
@@ -29,24 +30,22 @@ import { TableModule } from 'primeng/table';
   styleUrls: ['./GenericTableComponent.component.css']
 })
 export class GenericTableComponentComponent implements OnChanges {
-  @Input() columns: { field: string; header: string }[] = [];
+  @Input() columns: ColumnDefinition[] = [];
   @Input() data: any[] = [];
   @Input() showActions = false;
   @Input() actionLabel: string = 'Editar';
 
   @Output() onAction = new EventEmitter<any>();
 
+  filters: { [key: string]: string | undefined } = {};
   paginatedData: any[] = [];
   originalData: any[] = [];
-  filters: { [key: string]: string } = {};
-
   rows: number = 10;
   first: number = 0;
 
   ngOnChanges(): void {
-    // Inicializa filtros con claves vacías para todas las columnas
     this.columns.forEach(col => {
-      if (!this.filters[col.field]) {
+      if (this.isFieldColumn(col) && !this.filters[col.field]) {
         this.filters[col.field] = '';
       }
     });
@@ -69,8 +68,6 @@ export class GenericTableComponentComponent implements OnChanges {
 
   applyFilters(): void {
     let filtered = [...this.originalData];
-
-    // Aplica filtro por cada campo definido
     for (const key in this.filters) {
       const term = this.filters[key]?.trim().toLowerCase();
       if (term) {
@@ -79,9 +76,21 @@ export class GenericTableComponentComponent implements OnChanges {
         );
       }
     }
-
     this.data = filtered;
     this.first = 0;
     this.updatePaginatedData();
   }
+
+  emitAction(action: string, row: any): void {
+    this.onAction.emit({ action, row });
+  }
+
+  isFieldColumn(col: ColumnDefinition): col is FieldColumn {
+    return 'field' in col;
+  }
+
+isButtonColumn(col: ColumnDefinition): col is ButtonColumn {
+  return (col as ButtonColumn).type === 'buttons';
+}
+
 }

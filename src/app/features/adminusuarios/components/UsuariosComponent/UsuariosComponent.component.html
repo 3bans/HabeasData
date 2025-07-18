@@ -135,12 +135,12 @@
       </div>
 
       <ng-container *ngIf="listaUsuarios?.length">
-        <app-generic-table-component
-          [columns]="columns"
-          [data]="listaUsuarios"
-          [showActions]="true"
-          (onAction)="editarUsuario($event)"
-        ></app-generic-table-component>
+     <app-generic-table-component
+  [columns]="columns"
+  [data]="listaUsuarios"
+  [showActions]="true"
+  (onAction)="handleAction($event)"
+></app-generic-table-component>
       </ng-container>
 
       <div *ngIf="!listaUsuarios?.length" class="mensaje-cargando">

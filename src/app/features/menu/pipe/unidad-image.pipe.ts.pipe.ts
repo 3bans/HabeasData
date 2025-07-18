@@ -12,7 +12,7 @@ export class UnidadIconPipe implements PipeTransform {
     'Gestión de Usuarios':     'pi pi-users pi-fw',
     'Reporte Habeas Data':         'pi pi-question-circle',
     'Historico Reporte Clave Única':'pi pi-chart-bar',
-    'Registro médicos':            'pi pi-user-edit',
+    'Gestión médicos':            'pi pi-user-edit',
     'Asignación médicos':          'pi pi-user-plus'
   };
 

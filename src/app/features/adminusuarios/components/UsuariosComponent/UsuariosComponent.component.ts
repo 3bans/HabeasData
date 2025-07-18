@@ -19,6 +19,7 @@ import { ApiResponse } from '../../../habeasPaciente/interfaces/PacienteResponse
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ToastHelperService } from '../../../../shared/helpers/ToastHelperService';
+import { ColumnDefinition } from '../../../../shared/interfaces/column.interface';
 
 
 
@@ -38,16 +39,35 @@ export class UsuariosComponentComponent {
   formRegistroUsuario!: FormGroup;
   urlCargarRol: string = '';
   urlCargarPunto: string = '';
-  columns = [
-    { field: 'idUsuario', header: 'Identificación' },
-    { field: 'tipoIdUsuario', header: 'Tipo documento' },
-    { field: 'nombre', header: 'Nombre completo' },
-    { field: 'puntoAtencion', header: 'Punto de servicio' },
-    { field: 'nombreRol', header: 'Rol' },
-    { field: 'estado', header: 'Estado' },
-    { field: 'departamento', header: 'Departamento' },
-    { field: 'seccion', header: 'Sección' }
-  ];
+
+
+columns: ColumnDefinition[] = [
+  { field: 'idUsuario', header: 'Identificación' },
+  { field: 'tipoIdUsuario', header: 'Tipo documento' },
+  { field: 'nombre', header: 'Nombre completo' },
+  { field: 'puntoAtencion', header: 'Punto de servicio' },
+  { field: 'nombreRol', header: 'Rol' },
+  { field: 'estado', header: 'Estado' },
+  { field: 'departamento', header: 'Departamento' },
+  { field: 'seccion', header: 'Sección' },
+  {
+    header: '',
+    type: 'buttons',
+    buttons: [
+      {
+        label: ' ', // ← obligatorio pero vacío para evitar errores de tipo
+        icon: 'pi pi-pencil',
+        action: 'editar',
+        class: 'btn-icon-custom'
+      }
+    ]
+  }
+];
+
+
+
+
+
   rol: string = "";
   puntoServicio: string = "";
   usuarioSeleccionado: any = null;
@@ -109,6 +129,14 @@ export class UsuariosComponentComponent {
     control?.markAsDirty();
     control?.updateValueAndValidity();
   }
+
+
+  handleAction(event: { action: string, row: any }): void {
+  if (event.action === 'editar') {
+    this.editarUsuario(event.row);
+  }
+}
+
   editarUsuario(usuario: any): void {
     this.usuarioSeleccionado = usuario;
     this.urlCargarPunto = API_URLS.cargarPuntoServicio;

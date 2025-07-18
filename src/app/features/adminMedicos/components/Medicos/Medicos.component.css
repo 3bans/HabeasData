@@ -1,3 +1,126 @@
-:host {
+.usuarios-container {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.tabla-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  min-width: 120px;
+}
+
+.custom-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .custom-table {
+    font-size: 0.8rem;
+  }
+
+  .custom-table th,
+  .custom-table td {
+    padding: 0.5rem;
+  }
+}
+
+.mensaje-cargando {
+  text-align: center;
+  margin-top: 2rem;
+  color: gray;
+  font-style: italic;
+}
+.pi-id-card {
+  background-image: url("data:image/svg+xml,%3Csvg fill='gray' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5v14h18V5H3zm16 12H5V7h14v10zM6 8h4v2H6zm0 3h7v2H6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.5rem center;
+  background-size: 1rem;
+  height: 53% !important;
+  padding: 0.625rem 1rem !important;
+  background-color: #ffffff;
+  border: 2px solid #ced4da;
+  transition: all 0.3s ease;
+  color: #495057;
+}
+.custom-table td {
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.2;
+  max-width: 200px; /* o el valor que mejor te funcione */
+}
+/* Estilos generales para p-select */
+.p-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #ced4da;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.p-select-label {
   display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.p-select:focus-within {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.p-select:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.p-select-trigger {
+  padding: 0.625rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-select-trigger:hover {
+  background-color: #f1f1f1;
+}
+
+.p-select-trigger i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  color: #6c757d;
+  font-size: 1.1rem;
 }

@@ -1,6 +1,7 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
+  margin: 1rem;
 }
 
 .custom-table {
@@ -14,13 +15,40 @@
   background-color: #f4f4f4;
 }
 
-.custom-table th, .custom-table td {
+.custom-table th,
+.custom-table td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #eee;
+  min-width: 120px;
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.2;
+  max-width: 200px;
 }
-.table-container {
-  margin: 1rem;
+
+/* Botón azul con ícono blanco */
+.btn-pencil-icon {
+  background-color: #3968a0 !important;
+  color: white !important;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.btn-pencil-icon:hover {
+  background-color: #2e5280;
+}
+
+.btn-pencil-icon i {
+  color: white !important;
+  font-size: 1.2rem;
 }
 
 p-paginator {
@@ -28,6 +56,7 @@ p-paginator {
   display: flex;
   justify-content: center;
 }
-.btn-pencil-white .pi {
-  color: white !important;
+.btn-group {
+  display: flex;
+  gap: 0.5rem; /* separa los botones automáticamente */
 }

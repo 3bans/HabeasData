@@ -1,14 +1,107 @@
 <app-navbar></app-navbar>
 <p-toast></p-toast>
 
+<app-modal
+  [(visible)]="showModal"
+  [headerTitle]="medicoSeleccionado ? 'Editar Médico' : 'Registrar Médico'"
+  [showFooter]="false"
+  [dialogStyle]="{ width: '90vw', maxWidth: '1100px', height: '30vh' }"
+  (cancel)="cerrarModal()"
+>
+  <div modal-body class="p-fluid">
+    <form [formGroup]="formMedico" class="formgrid grid" style="width: 100%;">
+      <div class="field col-12 md:col-6">
+        <app-input
+          formControlName="identificacion"
+          label="Identificación"
+          placeholder="Identificación"
+          icon="pi pi-id-card"
+        ></app-input>
+      </div>
 
-<div class="flex justify-content-end mt-4">
-  <button pButton label="Nuevo Médico" icon="pi pi-plus" (click)="abrirModal()"></button>
+      <div class="field col-12 md:col-6">
+        <app-input
+          formControlName="nombreCompleto"
+          label="Nombre completo"
+          placeholder="Nombre completo"
+          icon="pi pi-user"
+        ></app-input>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <app-input
+          formControlName="especialidad"
+          label="Especialidad"
+          placeholder="Especialidad"
+          icon="pi pi-briefcase"
+        ></app-input>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <app-input
+          formControlName="consultorio"
+          label="Consultorio"
+          placeholder="Consultorio"
+          icon="pi pi-building"
+        ></app-input>
+      </div>
+    </form>
+
+    <div class="flex justify-content-end gap-3 mt-6 pt-4 border-top-1 surface-border">
+      <button
+        pButton
+        type="button"
+        label="Cancelar"
+        class="p-button-outlined p-button-secondary w-8rem"
+        (click)="cerrarModal()"
+      ></button>
+
+      <button
+        pButton
+        type="submit"
+        [label]="medicoSeleccionado ? 'Guardar' : 'Registrar'"
+        class="p-button-primary w-8rem"
+        [disabled]="formMedico.invalid"
+        (click)="guardarMedico()"
+      ></button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- CONTENEDOR DE TABLA Y CABECERA -->
+<div class="flex justify-content-center mt-8">
+  <div class="usuarios-container surface-card p-5 shadow-3 border-round-xl w-full md:w-11 lg:w-10 xl:w-8">
+    <div class="tabla-wrapper tabla-ajustada">
+      <div class="grid mb-4 align-items-center">
+        <div class="col-12 md:col-6">
+          <h2 class="text-2xl font-semibold m-0">Gestión de Médicos</h2>
+        </div>
+        <div class="col-12 md:col-6 text-right">
+          <button
+            pButton
+            pRipple
+            type="button"
+            class="p-button-sm text-white border-none"
+            style="background-color: #97b47c; color: white;"
+            (click)="abrirModal()"
+          >
+            <i class="pi pi-plus mr-2"></i> Nuevo Médico
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="listaMedicos?.length">
+        <app-generic-table-component
+          [columns]="columns"
+          [data]="listaMedicos"
+          [showActions]="true"
+          (onAction)="editarMedico($event)"
+        ></app-generic-table-component>
+      </ng-container>
+
+      <div *ngIf="!listaMedicos?.length" class="mensaje-cargando">
+        No hay médicos disponibles o se están cargando...
+      </div>
+    </div>
+  </div>
 </div>
-
-<app-generic-table-component
-  [columns]="columns"
-  [data]="listaMedicos"
-  [showActions]="true"
-  (onAction)="editarMedico($event)"
-></app-generic-table-component>

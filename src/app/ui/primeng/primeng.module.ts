@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { SelectModule } from 'primeng/select';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     CardModule,
     DropdownModule,
     SelectModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    MultiSelectModule
 
 
   ],
@@ -36,7 +38,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     CardModule,
     DropdownModule,
     SelectModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    MultiSelectModule
   ]
 })
 export class PrimeNGModule {}

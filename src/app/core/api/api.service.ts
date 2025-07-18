@@ -47,6 +47,12 @@ export class ApiService implements HttpGateway {
     );
   }
 
+  deleteWithTwoParams<T>(url: string, idUsuario: string | number, idMedico: string | number): Observable<T> {
+  return this.http.delete<T>(`${url}/${idUsuario}/${idMedico}`).pipe(
+    catchError(this.handleError)
+  );
+}
+
   private buildParams(params: any): HttpParams {
     let httpParams = new HttpParams();
     if (params) {
