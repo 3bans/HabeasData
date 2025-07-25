@@ -1,70 +1,61 @@
-/* 1. El propio card */
-:host ::ng-deep .custom-card {
-  background-color: #F9FAFC;
-
-  border-radius: 1rem;            /* bordes suaves */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* sombra ligera */
-  padding: 1.5rem 1rem;           /* respiración interior */
-}
-::ng-deep .pi {
-  font-family: "PrimeIcons" !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-}
-:host ::ng-deep .icon-wrapper {
+/* ── Card base ── */
+.menu-card {
+  width: 100%;
+  max-width: 240px;
+  margin: 0.5rem auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding-top: 2rem;  /* Nuevo espacio superior */
-
+  border-radius: 0.5rem;
+  background-color: #FAF9FC;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-/* 2. Círculo del icono */
-:host ::ng-deep .icon-circle {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto;
-  background: #E4F0A4;
+.menu-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
+/* ── Icono ── */
+.icon-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;  /* aquí centramos el icono */
+  margin-top: 0.5rem;
+}
+.icon-circle {
+  /* mínimo 3rem, ideal 10vw, máximo 5rem */
+  width: clamp(3rem, 10vw, 5rem);
+  height: clamp(3rem, 10vw, 5rem);
+  background-color: #e5f3d8;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-:host ::ng-deep .icon-circle i {
-  font-size: 2.5rem;
-  color: #3968A0;
+.icon-circle i {
+  /* mínimo 1.5rem, ideal 4vw, máximo 2.5rem */
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: #1f3a5f;
 }
 
-/* 3. Divider más suave */
-:host ::ng-deep .divider-light .p-divider {
-  border-color: #e5e5e5;
+/* ── Separador ── */
+.divider-light {
+  width: 80%;
+  margin: 0.5rem 0;
+  border-color: #ddd;
 }
 
-/* 4. Contenido textual */
+/* ── Texto ── */
 .card-content {
   text-align: center;
+  padding: 0.25rem 0.5rem 0.75rem;
 }
-
 .card-title {
-  font-size: 2.25rem;      /* equivalente a text-lg */
+  /* mínimo 1rem, ideal 2vw, máximo 1.5rem */
+  font-size: clamp(1rem, 2vw, 1.5rem);
   font-weight: 600;
-  color: #3968A0;             /* gris claro */
+  color: #1f3a5f;
+  line-height: 1.2;
   margin-bottom: 0.5rem;
-}
-
-.card-subtitle {
-  font-size: 0.875rem;     /* equivalente a text-sm */
-  color: #666;
-  line-height: 1.4;
-  min-height: 2rem;        /* para mantener alturas similares */
-}
-.custom-icon {
-  font-size: 4rem;
-  color: #3968A0;
-  font-family: 'PrimeIcons';
 }

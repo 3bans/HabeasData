@@ -1,4 +1,5 @@
 <app-navbar></app-navbar>
+
 <app-modal
   [(visible)]="showModal"
   [headerTitle]="'Punto de servicio'"
@@ -8,7 +9,9 @@
   (accept)="seleccionPunto()"
 >
   <div modal-body class="p-fluid">
-    <label class="mb-4 block">Por favor seleccione el punto de servicio al que pertenece:</label>
+    <label class="mb-4 block">
+      Por favor seleccione el punto de servicio al que pertenece:
+    </label>
     <app-list-select-loader
       [url]="urlpuntoServicio"
       [optionLabel]="'sernom'"
@@ -20,20 +23,45 @@
   </div>
 </app-modal>
 
+<main class="bg-white min-h-screen pt-5 px-4">
 
 
+    <!-- Operations -->
+    <section class="operations-section mb-10">
+      <h2 class="section-title">Operaciones de Habeas Data</h2>
 
-<main class="bg-white min-h-screen pt-5">
-  <div class="max-w-6xl mx-auto">
-    <!-- Añadimos mt-5 para separar del navbar -->
-    <div class="grid gap-6 justify-content-center align-content-start mt-5 pt-20">
-      <div *ngFor="let unidad of apps" class="col-12 md:col-6 lg:col-3 pt-8" >
-        <app-menu
-          [unidad]="unidad"
-          (clickUn)="onUnidadClick($event)"
-          class="w-full h-full"
-        ></app-menu>
+      <!-- estado de carga -->
+      <div *ngIf="loading" class="text-center">
+        <p-progressSpinner></p-progressSpinner>
       </div>
-    </div>
-  </div>
+
+      <!-- grid de operaciones -->
+      <div *ngIf="!loading" class="operations-grid">
+        <div *ngFor="let unidad of operationsApps">
+          <app-menu
+            [unidad]="unidad"
+            (clickUn)="onUnidadClick($event)"
+          ></app-menu>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider"/>
+
+    <!-- Administration -->
+    <section class="administration-section mt-10">
+      <h2 class="section-title">Administración</h2>
+
+      <!-- grid de administración -->
+      <div class="admin-grid">
+        <div *ngFor="let unidad of adminApps">
+          <app-menu
+            [unidad]="unidad"
+            (clickUn)="onUnidadClick($event)"
+          ></app-menu>
+        </div>
+      </div>
+    </section>
+
+
 </main>

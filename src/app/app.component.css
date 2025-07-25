@@ -1,1 +1,8 @@
 /* Puedes poner esto en styles.css o en el .component.css */
+
+.filter-control {
+  width: 100%;
+  height: 40px !important;
+  padding: 0 0.75rem !important;
+  box-sizing: border-box;
+}

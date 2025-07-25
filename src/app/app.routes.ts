@@ -6,6 +6,7 @@ import { AuthGuard } from './core/auth/auth.guard';
 import { UsuariosComponentComponent } from './features/adminusuarios/components/UsuariosComponent/UsuariosComponent.component';
 import { MedicosComponent } from './features/adminMedicos/components/Medicos/Medicos.component';
 import { AsignaMedicosComponent } from './features/asignacionMedicos/components/asignaMedicos/asignaMedicos.component';
+import { ListaRegistroHabeasComponent } from './features/reporteHabeas/components/listaRegistroHabeas/listaRegistroHabeas.component';
 
 export const routes: Routes = [
   {
@@ -42,6 +43,11 @@ export const routes: Routes = [
 {
     path: 'asigMed',
     component:AsignaMedicosComponent ,
+    canActivate: [AuthGuard]
+  },
+{
+    path: 'reportHabeas',
+    component:ListaRegistroHabeasComponent ,
     canActivate: [AuthGuard]
   },
   {

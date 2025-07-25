@@ -1,9 +1,41 @@
+/* mantiene tu .table-container existente */
 .table-container {
   width: 100%;
   overflow-x: auto;
-  margin: 1rem;
+  margin: 1rem 0;
 }
 
+/* —— Nuevo: contenedor de acciones encima de la tabla —— */
+.table-actions {
+  display: flex;
+  justify-content: flex-end;  /* o flex-start si prefieres alinearlo a la izquierda */
+  margin-bottom: 0.75rem;
+}
+
+/* Botón Exportar con fondo sólido */
+.btn-export {
+  background-color: #217346 !important;   /* verde “Excel” */
+  border: 1px solid #217346 !important;
+  color: #fff !important;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.btn-export .pi {
+  margin-right: 0.3rem;
+  font-size: 1rem;
+}
+
+.btn-export:hover {
+  background-color: #175a2b !important;  /* un poco más oscuro al hover */
+}
+
+/* El resto de tu CSS para .custom-table, .btn-group, p-paginator, etc. */
 .custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -28,35 +60,13 @@
   max-width: 200px;
 }
 
-/* Botón azul con ícono blanco */
-.btn-pencil-icon {
-  background-color: #3968a0 !important;
-  color: white !important;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem 0.7rem;
-  font-size: 1.2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease;
-}
-
-.btn-pencil-icon:hover {
-  background-color: #2e5280;
-}
-
-.btn-pencil-icon i {
-  color: white !important;
-  font-size: 1.2rem;
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
 }
 
 p-paginator {
   margin-top: 1rem;
   display: flex;
   justify-content: center;
-}
-.btn-group {
-  display: flex;
-  gap: 0.5rem; /* separa los botones automáticamente */
 }

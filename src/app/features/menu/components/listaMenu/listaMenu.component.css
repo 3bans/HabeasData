@@ -1,0 +1,38 @@
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f3a5f;
+  margin-bottom: 1rem;
+}
+
+.section-divider {
+  height: 1px;
+  border: none;
+  background-color: #d1d5db;
+  margin: 2rem 0;
+}
+
+/* ── Operations grid ── */
+.operations-grid {
+  display: grid;
+  /* Hace columnas de 240px exactos, y centra todas */
+  grid-template-columns: repeat(auto-fit, 240px);
+  gap: 2rem;
+  justify-content: center;   /* agrupa las tarjetas en el centro */
+  padding: 0 1rem;
+}
+
+/* ── Administration grid ── */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 240px);
+  gap: 2rem;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+/* ── Asegura que el navbar no meta padding extra ── */
+app-navbar {
+  width: 100%;
+  margin: 0;
+}

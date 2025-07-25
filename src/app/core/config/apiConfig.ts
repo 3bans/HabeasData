@@ -44,7 +44,9 @@ consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
   cargarListaSecretarias: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/usuarios/secretarias`,
   asignacionMedicos:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/asignacionMedicos/asignar`,
    listaMedicosAsignados:`${environment.apiGateway}:${environment.apiPorts.postGateway}/api/asignacionMedicos/medicoSecretaria/`,
-  eliminarAsignacionMedico: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/asignacionMedicos/secretariAsignada`
+  eliminarAsignacionMedico: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/asignacionMedicos/secretariAsignada`,
+   cargarListaRegistroFiltros: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/consultar`,
+  cargarListaRegistro: `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/todos`
 
 
 

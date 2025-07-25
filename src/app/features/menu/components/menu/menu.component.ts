@@ -22,33 +22,12 @@ import { ListaPermisos } from '../../interfaces/listaPermisos';
 ],
 
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent  {
 
-  @Input()
-  public unidad!:ListaPermisos;
+   @Input() unidad!: ListaPermisos;
   @Output() clickUn = new EventEmitter<ListaPermisos>();
 
-  ngOnInit(): void {
-//console.log("valor"+this.unidad);
-    //console.log(this.unidad.nombre);
-   if (!this.unidad) throw new Error('La unidad es requeridad');
-  }
-constructor(private router: Router){
-
-}
-
-
-
-  onUnidadClick(unidad: any) {
-
-
-  const selectedUnidad = localStorage.getItem('token');
-
-  // Verificar si existe y parsearlo a JSON
-  if (selectedUnidad) {
-    const unidadObj = JSON.parse(selectedUnidad);
-    this.router.navigate([`${unidad.url}`]);
-
-  }
+  onClick() {
+    this.clickUn.emit(this.unidad);
   }
 }

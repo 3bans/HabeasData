@@ -1,10 +1,22 @@
 <div class="table-container">
+  <!-- Contenedor de acciones de la tabla -->
+  <div class="table-actions">
+    <button
+      type="button"
+      pButton
+      icon="pi pi-file-excel"
+      label="Exportar"
+      class="btn-export"
+      pTooltip="Exportar todo a Excel"
+      (click)="exportarXLS()"
+    ></button>
+  </div>
+
   <table class="custom-table">
     <thead>
       <tr>
         <th *ngFor="let col of columns">{{ col.header }}</th>
       </tr>
-
       <tr>
         <th *ngFor="let col of columns">
           <ng-container *ngIf="isFieldColumn(col)">
@@ -20,26 +32,24 @@
         </th>
       </tr>
     </thead>
-
     <tbody>
       <tr *ngFor="let row of paginatedData">
         <td *ngFor="let col of columns">
           <ng-container *ngIf="isFieldColumn(col)">
             {{ row[col.field] }}
           </ng-container>
-
           <ng-container *ngIf="isButtonColumn(col)">
-  <div class="btn-group">
-    <button
-      *ngFor="let btn of col.buttons"
-      type="button"
-      [class]="btn.class || 'p-button-sm p-button-secondary'"
-      (click)="emitAction(btn.action, row)">
-      <i [class]="btn.icon ?? 'pi pi-pencil'"></i>
-    </button>
-  </div>
-</ng-container>
-
+            <div class="btn-group">
+              <button
+                *ngFor="let btn of col.buttons"
+                type="button"
+                [class]="btn.class || 'p-button-sm p-button-secondary'"
+                (click)="emitAction(btn.action, row)"
+              >
+                <i [class]="btn.icon ?? 'pi pi-pencil'"></i>
+              </button>
+            </div>
+          </ng-container>
         </td>
       </tr>
     </tbody>
@@ -49,6 +59,6 @@
     [rows]="rows"
     [totalRecords]="data.length"
     [rowsPerPageOptions]="[5, 10, 20, 50]"
-    (onPageChange)="onPageChange($event)">
-  </p-paginator>
+    (onPageChange)="onPageChange($event)"
+  ></p-paginator>
 </div>

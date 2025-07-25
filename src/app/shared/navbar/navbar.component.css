@@ -1,142 +1,86 @@
-/* Logo institucional */
-.logo {
-  width: 60vw;
-  max-width: 350px;
-  height: auto;
-  display: block;
+/* ── Contenedor general ── */
+.custom-menubar {
+  background-color: #ffffff;               /* blanco puro */
+  border-bottom: 1px solid #e2e8f0;        /* línea sutil */
+  padding: 0 1rem;                         /* espacio horizontal */
+  display: flex;
+  align-items: center;
 }
 
-/* Contenedor derecho */
+/* ── Logo + título ── */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.logo {
+  height: 40px;
+  margin-right: 0.75rem;
+}
+.app-title {
+  font-size: 1.5rem;                       /* tamaño medio-grande */
+  font-weight: 600;
+  color: #1f3153;                          /* azul oscuro */
+}
+
+/* ── Zona de la derecha ── */
 .menu-right-container {
   display: flex;
   align-items: center;
-  gap: clamp(0.5rem, 2vw, 1.5rem);
-  padding-right: 1rem;
-  list-style: none;
-  margin: 0;
+  gap: 1rem;
 }
 
-/* Contenedor de ícono y texto */
-.app-info {
+/* ── Icono de la app (opc.) ── */
+.app-icon img {
+  width: 32px;
+  height: 32px;
+}
+
+/* ── Datos de usuario ── */
+.user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
-
-/* Ícono Habeas */
-.icono {
-  width: 3vw;
-  max-width: 45px;
-  min-width: 28px;
-  height: auto;
-}
-
-/* Contenedor de textos */
-.text-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  line-height: 1.2;
-}
-
-/* Título */
-.habeas-text {
-  font-size: 1.6vw;
-  font-weight: 600;
-  color: #3968a0; /* Color solicitado */
-  white-space: nowrap;
-}
-
-/* Nombre usuario */
-.user-nombre {
-  display: flex;
-  align-items: center;
-  font-size: 1vw;
-  color: #1a1a1a;
-  font-weight: 500;
-  white-space: nowrap;
-  gap: 8px;
-}
-
-/* Avatar usuario */
-.user-avatar {
-  background-color: #3968a0;
-  color: white;
-  font-weight: bold;
-  font-size: 0.8rem;
-  width: 28px;
-  height: 28px;
+.user-initials {
+  width: 32px;
+  height: 32px;
+  background-color: #1f3153;               /* mismo azul oscuro */
+  color: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 600;
+}
+.user-name {
+  font-size: 1rem;
+  color: #1f3153;
+  white-space: nowrap;
 }
 
-/* Botón logout */
-.logout-button {
-  background-color: #97b47c;
-  color: white;
+/* ── Botones de navegación ── */
+.nav-btn {
+  background: transparent;
   border: none;
+  color: #1f3153;
   font-size: 1.2rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+.nav-btn:hover {
+  background: rgba(31, 49, 83, 0.1);
 }
 
-.logout-button:hover {
-  background-color: #7da163;
-  cursor: pointer;
-}
-
-/* Botón home */
-.home-button {
-  background-color: #3968a0;
-  color: white;
-  border: none;
-  font-size: 1.2rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-.home-button:hover {
-  background-color: #2d507f;
-  cursor: pointer;
-}
-
-/* Quitar puntos de las listas */
-.p-menuitem.no-dot {
-  list-style-type: none;
-}
-
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 768px) {
-  .logo {
-    width: 35vw;
-    max-width: 200px;
+  .app-title {
+    font-size: 1.25rem;
   }
-
-  .icono {
-    max-width: 35px;
-  }
-
-  .habeas-text {
-    font-size: 4vw;
-  }
-
-  .user-nombre {
-    font-size: 3.5vw;
-  }
-
-  .logout-button,
-  .home-button {
-    font-size: 4vw;
-    padding: 0.3rem 0.6rem;
-  }
-
   .menu-right-container {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
+    gap: 0.5rem;
+  }
+  .user-name {
+    display: none;  /* oculta el nombre en pantallas pequeñas */
   }
 }

@@ -1,4 +1,3 @@
-// src/app/pipes/unidad-icon.pipe.ts
 import { Pipe, PipeTransform } from '@angular/core';
 import { ListaPermisos } from '../interfaces/listaPermisos';
 
@@ -8,18 +7,15 @@ import { ListaPermisos } from '../interfaces/listaPermisos';
 })
 export class UnidadIconPipe implements PipeTransform {
   private readonly iconMap: Record<string, string> = {
-    'Registro Habeas Data':        'pi pi-database',
-    'Gestión de Usuarios':     'pi pi-users pi-fw',
-    'Reporte Habeas Data':         'pi pi-question-circle',
-    'Historico Reporte Clave Única':'pi pi-chart-bar',
-    'Gestión médicos':            'pi pi-user-edit',
-    'Asignación médicos':          'pi pi-user-plus'
+    'Registro Habeas Data':          'pi pi-database',
+    'Reporte Habeas Data':           'pi pi-question-circle',
+    'Asignación médicos':            'pi pi-user-plus',
+    'Gestión de Usuarios':           'pi pi-users pi-fw',
+    'Gestión médicos':               'pi pi-user-edit',
+    'Historico Reporte Clave Única': 'pi pi-chart-bar'
   };
 
   transform(unidad: ListaPermisos): string {
-    console.log('[unidadIcon] nombre:', unidad.nombre);
-
-    const key = unidad.nombre;
-    return this.iconMap[key] || 'pi pi-question';  // fallback
+    return this.iconMap[unidad.nombre] ?? 'pi pi-question';
   }
 }

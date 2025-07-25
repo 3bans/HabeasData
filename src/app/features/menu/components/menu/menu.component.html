@@ -1,8 +1,12 @@
-<p-card class="cursor-pointer" (click)="onUnidadClick(unidad)" styleClass="h-full " [style]="{ 'background-color': '#FAF9FC' }">
+<p-card
+  class="menu-card cursor-pointer"
+  [style]="{ 'background-color': '#FAF9FC' }"
+  (click)="onClick()"
+>
   <ng-template pTemplate="header">
     <div class="icon-wrapper">
       <div class="icon-circle">
-        <i class="{{ unidad | unidadIcon }}"></i>
+        <i [ngClass]="unidad | unidadIcon"></i>
       </div>
     </div>
   </ng-template>
@@ -11,6 +15,5 @@
 
   <div class="card-content">
     <div class="card-title">{{ unidad.nombre }}</div>
-
   </div>
 </p-card>

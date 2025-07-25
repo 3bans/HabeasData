@@ -12,6 +12,11 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
+
+// Añade estas dos
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 import { ColumnDefinition, FieldColumn, ButtonColumn } from '../interfaces/column.interface';
 
 @Component({
@@ -34,14 +39,13 @@ export class GenericTableComponentComponent implements OnChanges {
   @Input() data: any[] = [];
   @Input() showActions = false;
   @Input() actionLabel: string = 'Editar';
-
   @Output() onAction = new EventEmitter<any>();
 
   filters: { [key: string]: string | undefined } = {};
   paginatedData: any[] = [];
   originalData: any[] = [];
-  rows: number = 10;
-  first: number = 0;
+  rows = 10;
+  first = 0;
 
   ngOnChanges(): void {
     this.columns.forEach(col => {
@@ -49,7 +53,6 @@ export class GenericTableComponentComponent implements OnChanges {
         this.filters[col.field] = '';
       }
     });
-
     this.originalData = [...this.data];
     this.applyFilters();
   }
@@ -88,9 +91,32 @@ export class GenericTableComponentComponent implements OnChanges {
   isFieldColumn(col: ColumnDefinition): col is FieldColumn {
     return 'field' in col;
   }
+  isButtonColumn(col: ColumnDefinition): col is ButtonColumn {
+    return (col as ButtonColumn).type === 'buttons';
+  }
 
-isButtonColumn(col: ColumnDefinition): col is ButtonColumn {
-  return (col as ButtonColumn).type === 'buttons';
-}
+  /** NUEVO MÉTODO para exportar TODO el data en XLSX */
+  exportarXLS(): void {
+    // 1) Reconstruye un array con claves = header, valores = fila[field]
+    const exportData = this.originalData.map(row => {
+      const obj: any = {};
+      this.columns.forEach(col => {
+        if (this.isFieldColumn(col)) {
+          obj[col.header] = row[col.field];
+        }
+      });
+      return obj;
+    });
 
+    // 2) Crea worksheet y workbook
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+    const wb: XLSX.WorkBook = { Sheets: { 'Datos': ws }, SheetNames: ['Datos'] };
+
+    // 3) Serializa a array buffer en formato xlsx
+    const wbout: ArrayBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+    // 4) Descarga con FileSaver
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    saveAs(blob, 'tabla_exportada.xlsx');
+  }
 }
