@@ -18,12 +18,14 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectItem } from 'primeng/api';
 import { TIPO_DOCUMENTO_OPTIONS } from '../../../../shared/constants/tipo-documento.constants';
+import { ToastModule } from "primeng/toast";
+import { ToastHelperService } from '../../../../shared/helpers/ToastHelperService';
 
 @Component({
   selector: 'app-paciente-habeas',
   standalone: true,
   imports: [
-      DialogModule,
+    DialogModule,
     ButtonModule,
     CommonModule,
     ReactiveFormsModule,
@@ -32,8 +34,9 @@ import { TIPO_DOCUMENTO_OPTIONS } from '../../../../shared/constants/tipo-docume
     DividerModule,
     InputComponent,
     ModalComponent,
-    ListSelectLoaderComponent
-  ],
+    ListSelectLoaderComponent,
+    ToastModule
+],
   templateUrl: './pacienteHabeas.component.html',
   styleUrls: ['./pacienteHabeas.component.css'],
 })
@@ -50,13 +53,15 @@ export class PacienteHabeasComponent implements OnInit, OnDestroy {
   mensajeErrorHabeas: string | null = null;
   mensajeErrorBusquedad: string | null = null;
   mensajeEstadoHabeas: any | null = null;
-  selectedMedicoId!: string;
+  selectedMedicoId!: any;
   selectedMotivoId!: string;
   identificacion!: any;
   mostrarModalCodigoInvalido: boolean = false;
   mensajeCodigo: string | null = null;
   habilitarAceptarRegistro: boolean = false;
   habilitarAceptar: boolean = false;
+  aplicacionRol=localStorage.getItem('rol');
+
 @ViewChild('motivoSelectRef', { static: false }) motivoSelectRef!: ListSelectLoaderComponent;
 @ViewChild('medicoNoSelectRef', { static: false }) medicoNoSelectRef!: ListSelectLoaderComponent;
 @ViewChild('medicoSiSelectRef', { static: false }) medicoSiSelectRef!: ListSelectLoaderComponent;
@@ -83,7 +88,8 @@ estadosHabeas:  {
   ];
   constructor(
     private fb: FormBuilder,
-    private apiService: ApiService
+    private apiService: ApiService,
+      private toast: ToastHelperService
 
   ) { }
 
@@ -167,6 +173,7 @@ estadosHabeas:  {
             this.registroHabilitado = false;
           } else {
             console.error('Error al consultar información del paciente:', err);
+            this.toast.error('Busqueda pacientes', 'Error al consultar información del paciente'),
             this.registroHabilitado = false;
           }
         }
@@ -180,10 +187,11 @@ estadosHabeas:  {
 consultarHabeas(): void {
   const tipoDocumento = this.formHabeas.get('tipoDocumento')!.value;
   const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
-
+const aplicacion=localStorage.getItem('rol');
   const url = API_URLS.administradorHabeas.consultaEstadoHabeas(
     identificadorUnico,
-    tipoDocumento
+    tipoDocumento,
+    aplicacion!
   );
 
   this.apiService.getResponse<ApiResponse<HabeasData | HabeasData[]>>(url).subscribe({
@@ -218,6 +226,8 @@ consultarHabeas(): void {
 
   error: (err: HttpErrorResponse) => {
   console.log('Error HTTP recibido:', err);
+              //this.toast.error('Busqueda pacientes', 'Error al consultar información del paciente'),
+
   this.estadosHabeas = []; // ← limpiar para evitar mostrar resultados anteriores
 
   if (err.status === 404) {
@@ -263,7 +273,7 @@ consultarHabeas(): void {
 
 
 closeModal() {
-  this.onReset();
+  // /this.onReset();
 
 
 
@@ -295,7 +305,16 @@ this.selectedMotivoId ="";
     }
   }
 private validarEstadoAceptar(): void {
+
+  console.log('Entraaa',this.TipoHabeas.length,this.aplicacionRol);
+  if (this.aplicacionRol !='5' && this.TipoHabeas.length >0){
+
+ this.habilitarAceptarRegistro =true;
+  }else if (this.aplicacionRol =='5'){
   this.habilitarAceptarRegistro = !!this.selectedMedicoId && this.TipoHabeas.length >0;
+
+  }
+
 }
 
 
@@ -314,18 +333,24 @@ this.habilitarAceptar=!!this.selectedMedicoId  && !!this.TipoHabeas ;
     }
 
     //this.validarEstadoAceptar();
-
+//console.log(this.selectedMotivoId +' '+this.aplicacionRol);
 if (this.selectedMedicoId && this.selectedMotivoId ) {
  this.validarEstado();
 
+}else if (this.selectedMotivoId && this.aplicacionRol !='5'){
+this.habilitarAceptar=true;
 }
 
     //console.log(`✅ Seleccionado ${type}:`, value);
   }
 
   onSeleccionMedio(value: string): void {
-    console.log('entro');
+
   this.formHabeas.get('medioAutorizacion')?.setValue(value);
+
+
+
+
   this.validarEstadoAceptar();
 }
 
@@ -345,7 +370,7 @@ if (this.selectedMedicoId && this.selectedMotivoId ) {
 
   registerHabeas(tipo:string): void {
     this.crearCodigo();
-
+    let idaplicacion=2;
     if (tipo=='P'){
 const nombre= this.formHabeas.get('nombresPaciente')!.value + " " + this.formHabeas.get('primerApellido')!.value + " "+ this.formHabeas.get('segundoApellido')!.value + " ";
 
@@ -354,9 +379,15 @@ this.enviarEmail(this.codigo,this.formHabeas.get('correoElectronico')!.value ,no
 this.enviarCodigos(this.codigo);
     }
 
+    if (this.aplicacionRol =='5'){
+        this.selectedMedicoId=null;
+        this.selectedMotivoId='6';
+        idaplicacion=2
+    }
+
     const body = {
       idMedico: +this.selectedMedicoId,
-      idAplicacion: 3,
+      idAplicacion: idaplicacion,
       idMotivo: !this.selectedMotivoId || isNaN(+this.selectedMotivoId) ? 1 : +this.selectedMotivoId,
 
       noIdentificacion: this.formHabeas.get('identificacion')!.value,
@@ -379,9 +410,13 @@ this.enviarCodigos(this.codigo);
       .subscribe({
         next: (response: ApiResponse<any>) => {
           console.log('✅ Registro exitoso:', response);
+                                this.toast.success('Registro pacientes', '✅ Registro exitoso del paciente'),
+
           this.showModal = false;
         },
         error: (err: HttpErrorResponse) => {
+                      this.toast.error('Registro pacientes', 'Error al registrar  el paciente'),
+
           console.error('❌ Error al registrar Habeas:', err);
         }
       });
@@ -391,7 +426,9 @@ this.enviarCodigos(this.codigo);
   openModalRegistrar() {
     const identificacion = localStorage.getItem('token');
     const paciente = this.formHabeas.get('identificacion')?.value;
+
     this.urlCargarLista = API_URLS.cargarListaMedicos.cargarLista(identificacion!, paciente, 'S');
+    //console.log( this.urlCargarLista);
    this.showModalRegistro = true;
   }
 
@@ -420,9 +457,12 @@ enviarEmail(codigo: string, emailpac: string, paciente: string) {
     .subscribe({
       next: (response: string) => {
         console.log('✅ Envío email exitoso:', response);
+
       },
       error: (err: HttpErrorResponse) => {
         console.error('❌ Error al enviar el código al paciente:', err);
+                                                this.toast.error('Envio de email', 'Error al enviar email')
+
       }
     });
 }
@@ -441,6 +481,8 @@ enviarCodigo(mensaje:string,  destinatario:string){
         },
         error: (err: HttpErrorResponse) => {
           console.error('❌ Error al enviar el código al paciente:', err);
+                                                  this.toast.success('Envio de sms', 'Error al enviar el código al paciente')
+
         }
       });
 }
@@ -468,6 +510,8 @@ validarCodigo() {
     error: (err: HttpErrorResponse) => {
       console.error('❌ Error al validar el código:', err);
       this.mensajeCodigo = '❌ Error al validar el código. Intente nuevamente.';
+                                                        this.toast.error('Error validación código', 'Error al validar el código. Intente nuevamente')
+
       this.mostrarModalCodigoInvalido = true;
     }
   });

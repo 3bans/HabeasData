@@ -1,5 +1,5 @@
 <div class="table-container">
-  <!-- Contenedor de acciones de la tabla -->
+  <!-- Acciones de la tabla -->
   <div class="table-actions">
     <button
       type="button"
@@ -34,7 +34,10 @@
     </thead>
     <tbody>
       <tr *ngFor="let row of paginatedData">
-        <td *ngFor="let col of columns">
+        <td
+          *ngFor="let col of columns"
+          [attr.data-label]="col.header"
+        >
           <ng-container *ngIf="isFieldColumn(col)">
             {{ row[col.field] }}
           </ng-container>
@@ -58,7 +61,7 @@
   <p-paginator
     [rows]="rows"
     [totalRecords]="data.length"
-    [rowsPerPageOptions]="[5, 10, 20, 50]"
+    [rowsPerPageOptions]="[5,10,20,50]"
     (onPageChange)="onPageChange($event)"
   ></p-paginator>
 </div>

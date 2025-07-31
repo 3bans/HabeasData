@@ -82,14 +82,29 @@ export class ListaRegistroHabeasComponent implements OnInit {
     });
 
     // Carga inicial sin filtros
-    this.buscar();
+    this.cargarLista();
   }
 
   /**
    * Arma los parámetros de consulta y actualiza la tabla.
    * Se llama desde el botón Buscar.
    */
-  buscar(): void {
+
+
+cargarLista(){
+
+
+
+    const url = API_URLS.cargarListaRegistro;
+
+    this.api.get<HabeasData[]>(url).subscribe({
+      next: data => this.listaUsuarios = data, // ← refresca la tabla
+      error: () => this.toast.error('Buscar registros', 'Error al aplicar filtros')
+    });
+}
+
+
+  buscarFiltros(): void {
     const vals = this.filtroForm.value as Record<string, string>;
     let params = new HttpParams();
 
@@ -104,15 +119,19 @@ export class ListaRegistroHabeasComponent implements OnInit {
     if (this.selectedMotivoId) params = params.set('idMotivo', this.selectedMotivoId);
     if (this.selectedMedicoId) params = params.set('identificacion', this.selectedMedicoId);
 
-    const url = API_URLS.cargarListaRegistroFiltros;
-    console.log(`GET ${url}?${params.toString()}`);
+const url = `${API_URLS.cargarListaRegistroFiltros}?${params.toString()}`;
+   //console.log(`GET ${url}?${params.toString()}`);
 
-    this.api.get<HabeasData[]>(url, { params }).subscribe({
-      next: data => this.listaUsuarios = data, // ← refresca la tabla
-      error: () => this.toast.error('Buscar registros', 'Error al aplicar filtros')
-    });
-    console.log(this.listaUsuarios);
+    this.api.get<HabeasData[]>(url,).subscribe({
+    next: data => {
+      this.listaUsuarios = data;
+      console.log('Ya filtrados:', url, data);
+    },
+    error: () => this.toast.error('Buscar registros','Error al filtrar')
+  });
   }
+
+
 
   /**
    * Resetea filtros y recarga la lista completa.
@@ -127,7 +146,7 @@ export class ListaRegistroHabeasComponent implements OnInit {
     });
     this.selectedMedicoId = '';
     this.selectedMotivoId = '';
-    this.buscar();
+    this.cargarLista();
   }
 
   /**

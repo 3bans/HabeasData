@@ -11,8 +11,10 @@ interface LoginResponse {
   code: number;
   description: string;
   accessToken: string;
+  rol:string,
   nombre:string;
   user?: User;
+
 }
 
 interface LoginCredentials {
@@ -38,7 +40,7 @@ export class AuthService {
   private loadInitialState(): void {
     const token = this.storage.get('jwt_token');
     const user = this.storage.get('current_user');
-    console.log(token);
+    //console.log(token);
     if (token && user) {
       this.currentUserSubject.next(JSON.parse(user));
     }
@@ -56,6 +58,7 @@ login(credentials: LoginCredentials): Observable<void> {
         this.setToken(response.accessToken); // Solo guarda el token
 
          localStorage.setItem('nombre', response.nombre);
+          localStorage.setItem('rol', response.rol);
 
       } else {
         throw new Error('Credenciales inválidas');

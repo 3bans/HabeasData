@@ -1,20 +1,20 @@
-/* mantiene tu .table-container existente */
+/* ── Contenedor con scroll en escritorio ── */
 .table-container {
   width: 100%;
   overflow-x: auto;
   margin: 1rem 0;
 }
 
-/* —— Nuevo: contenedor de acciones encima de la tabla —— */
+/* ── Acciones encima de la tabla ── */
 .table-actions {
   display: flex;
-  justify-content: flex-end;  /* o flex-start si prefieres alinearlo a la izquierda */
+  justify-content: flex-end;
   margin-bottom: 0.75rem;
 }
 
-/* Botón Exportar con fondo sólido */
+/* ── Botón Exportar ── */
 .btn-export {
-  background-color: #217346 !important;   /* verde “Excel” */
+  background-color: #217346 !important;
   border: 1px solid #217346 !important;
   color: #fff !important;
   padding: 0.4rem 0.8rem;
@@ -22,31 +22,26 @@
   border-radius: 0.25rem;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   transition: background-color 0.2s ease;
 }
-
 .btn-export .pi {
   margin-right: 0.3rem;
   font-size: 1rem;
 }
-
 .btn-export:hover {
-  background-color: #175a2b !important;  /* un poco más oscuro al hover */
+  background-color: #175a2b !important;
 }
 
-/* El resto de tu CSS para .custom-table, .btn-group, p-paginator, etc. */
+/* ── Tabla base ── */
 .custom-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
   background: #fff;
 }
-
 .custom-table thead {
   background-color: #f4f4f4;
 }
-
 .custom-table th,
 .custom-table td {
   padding: 1rem;
@@ -60,13 +55,57 @@
   max-width: 200px;
 }
 
+/* ── Grupo de botones dentro de la tabla ── */
 .btn-group {
   display: flex;
   gap: 0.5rem;
 }
 
+/* ── Paginador ── */
 p-paginator {
   margin-top: 1rem;
   display: flex;
   justify-content: center;
+}
+
+/* ── Responsive stacked (<768px) ── */
+@media (max-width: 768px) {
+  .custom-table,
+  .custom-table thead,
+  .custom-table tbody,
+  .custom-table th,
+  .custom-table td,
+  .custom-table tr {
+    display: block;
+  }
+
+  /* Oculta el header real */
+  .custom-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  /* Cada fila como tarjeta */
+  .custom-table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+  }
+
+  .custom-table td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+  }
+
+  .custom-table td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    font-weight: bold;
+    white-space: nowrap;
+  }
 }

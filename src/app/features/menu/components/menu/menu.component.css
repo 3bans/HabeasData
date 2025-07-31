@@ -7,7 +7,7 @@
   flex-direction: column;
   align-items: center;
   border-radius: 0.5rem;
-  background-color: #FAF9FC;
+  background-color: #faf9fc;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -20,23 +20,21 @@
 .icon-wrapper {
   width: 100%;
   display: flex;
-  justify-content: center;  /* aquí centramos el icono */
-  margin-top: 0.5rem;
+  justify-content: center;
+  margin-top: 0.75rem;
 }
 .icon-circle {
-  /* mínimo 3rem, ideal 10vw, máximo 5rem */
   width: clamp(3rem, 10vw, 5rem);
   height: clamp(3rem, 10vw, 5rem);
-  background-color: #e5f3d8;
+  background-color: #E0F2F1;       /* Mint claro (mejor contraste) */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .icon-circle i {
-  /* mínimo 1.5rem, ideal 4vw, máximo 2.5rem */
   font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: #1f3a5f;
+  color: #217346;                   /* Tu color primario */
 }
 
 /* ── Separador ── */
@@ -52,7 +50,6 @@
   padding: 0.25rem 0.5rem 0.75rem;
 }
 .card-title {
-  /* mínimo 1rem, ideal 2vw, máximo 1.5rem */
   font-size: clamp(1rem, 2vw, 1.5rem);
   font-weight: 600;
   color: #1f3a5f;

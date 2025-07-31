@@ -1,8 +1,9 @@
-<app-navbar></app-navbar>
-
+<!-- app.component.html -->
+<app-navbar class="custom‑menubar"></app-navbar>
 <app-modal
+
   [(visible)]="showModal"
-  [headerTitle]="'Punto de servicio'"
+  headerTitle="Punto de servicio"
   [dialogStyle]="{ width: '1000px', height: '600px' }"
   [showCancelButton]="false"
   [acceptDisabled]="acceptDisabled"
@@ -22,46 +23,52 @@
     ></app-list-select-loader>
   </div>
 </app-modal>
+<main class="layout-main">
+  <div class="container">
 
-<main class="bg-white min-h-screen pt-5 px-4">
-
-
-    <!-- Operations -->
-    <section class="operations-section mb-10">
-      <h2 class="section-title">Operaciones de Habeas Data</h2>
-
-      <!-- estado de carga -->
-      <div *ngIf="loading" class="text-center">
-        <p-progressSpinner></p-progressSpinner>
-      </div>
-
-      <!-- grid de operaciones -->
-      <div *ngIf="!loading" class="operations-grid">
-        <div *ngFor="let unidad of operationsApps">
-          <app-menu
-            [unidad]="unidad"
-            (clickUn)="onUnidadClick($event)"
-          ></app-menu>
-        </div>
+    <!-- OPERATIONS: solo si hay cards -->
+    <section
+      *ngIf="!loading && operationsApps!.length > 0"
+      class="section operations-section"
+    >
+      <header class="section-header">
+        <h2 class="section-title">Operaciones Habeas Data</h2>
+      </header>
+      <div class="cards-grid">
+        <app-menu
+          *ngFor="let unidad of operationsApps"
+          [unidad]="unidad"
+          (clickUn)="onUnidadClick(unidad)"
+        ></app-menu>
       </div>
     </section>
 
-    <hr class="section-divider"/>
+    <!-- Divider solo si ambas secciones están presentes -->
+    <hr
+      *ngIf="
+        !loading &&
+        operationsApps!.length > 0 &&
+        adminApps!.length > 0
+      "
+      class="section-divider"
+    />
 
-    <!-- Administration -->
-    <section class="administration-section mt-10">
-      <h2 class="section-title">Administración</h2>
-
-      <!-- grid de administración -->
-      <div class="admin-grid">
-        <div *ngFor="let unidad of adminApps">
-          <app-menu
-            [unidad]="unidad"
-            (clickUn)="onUnidadClick($event)"
-          ></app-menu>
-        </div>
+    <!-- ADMINISTRATION: solo si hay cards -->
+    <section
+      *ngIf="!loading && adminApps!.length > 0"
+      class="section administration-section"
+    >
+      <header class="section-header">
+        <h2 class="section-title">Administración</h2>
+      </header>
+      <div class="cards-grid">
+        <app-menu
+          *ngFor="let unidad of adminApps"
+          [unidad]="unidad"
+          (clickUn)="onUnidadClick(unidad)"
+        ></app-menu>
       </div>
     </section>
 
-
+  </div>
 </main>

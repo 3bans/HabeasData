@@ -14,8 +14,8 @@ gateway: {
 
 
 administradorHabeas: {
-consultaEstadoHabeas: (identificacion: string, tipoDocumento: string): string =>
-  `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/existe?noIdentificacion=${identificacion}&tipoId=${tipoDocumento}`,
+consultaEstadoHabeas: (identificacion: string, tipoDocumento: string, aplicacion: string): string =>
+  `${environment.apiGateway}:${environment.apiPorts.postGateway}/api/habeas/existe?noIdentificacion=${identificacion}&tipoId=${tipoDocumento}&aplicacion=${aplicacion}`,
 
 
     consultaInformacion: (identificacion: string, tipoDocumento: string): string =>

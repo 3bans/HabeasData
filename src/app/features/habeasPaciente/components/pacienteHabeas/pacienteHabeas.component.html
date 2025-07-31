@@ -1,4 +1,6 @@
 <app-navbar></app-navbar>
+<p-toast></p-toast>
+
 <app-modal [(visible)]="showModalHabeas" headerTitle="Código de verificación" [showFooter]="false"
   (cancel)="closeModal()" [dialogStyle]="{ width: '300px', height: 'auto', 'z-index': '1100' }">
   <div modal-body>
@@ -17,10 +19,12 @@
   [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)="registerHabeas('N')" (cancel)="closeModal()" [acceptDisabled]="!habilitarAceptar"
 >
   <div modal-body class="p-fluid">
+    <div *ngIf="aplicacionRol === '5'" >
     <label class="mb-4 block">Por favor seleccione al médico con el que no aceptan el habeas data:</label>
     <app-list-select-loader    #medicoNoSelectRef
  [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
       [emitLabel]="false" (selectedChange)="onSeleccion($event, 'medico')" class="mb-4 block"></app-list-select-loader>
+    </div>
     <label for="motivo" class="mb-4 block">Explíquenos por qué no autoriza:</label>
     <app-list-select-loader      #motivoSelectRef
      [url]="urlMotivosHabeas" [optionLabel]="'descripcion'" [optionValue]="'id_motivo'"
@@ -31,15 +35,18 @@
 <app-modal [(visible)]="showModalRegistro" headerTitle="Autorización de habeas data " class="mb-6 block"
   [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)=" enviarSms('P')" (cancel)="closeModal()" [acceptDisabled]="! habilitarAceptarRegistro">
   <div modal-body class="p-fluid">
+     <div *ngIf="aplicacionRol === '5'" >
     <label class="mb-4 block">Por favor seleccione al médico para firmar el habeas data:</label>
     <app-list-select-loader   medicoNoSelectRef
  [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
-      [emitLabel]="false" (selectedChange)="onSeleccion($event, 'medico')" class="mb-4 block"></app-list-select-loader>
+      [emitLabel]="false" (selectedChange)="onSeleccion($event, 'medico')" class="mb-4 block"></app-list-select-loader></div>
     <label for="motivo" class="mb-4 block">Medio de autorización:</label>
     <p-select [options]="TipoHabeas" optionLabel="label" placeholder="Seleccione" class="w-full pi-id-card"
       optionValue="value"     (onChange)="onSeleccionMedio($event.value)"/>
   </div>
 </app-modal>
+
+
 <div class="flex justify-content-center surface-50 py-6 px-4">
   <div class="surface-card p-5 shadow-3 border-round-xl w-full" style="max-width: 1200px;">
 

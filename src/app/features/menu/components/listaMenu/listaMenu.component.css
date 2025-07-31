@@ -1,38 +1,135 @@
-.section-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #1f3a5f;
-  margin-bottom: 1rem;
+/* styles.css (o tu archivo global) */
+:root {
+  /* Paleta de marca */
+  --brand-primary:   #1f3a5f;
+  --brand-accent:    #217346;
+  --icon-bg:         rgba(33,115,70,0.1);
+  --card-bg:         #faf9fc;
 }
 
+/* ─── Navbar ─── */
+p-menubar.custom-menubar {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 10;
+}
+
+/* ─── Empuja contenido bajo el navbar ─── */
+.layout-main {
+  padding-top: 5rem;   /* un poco más de espacio */
+  background: #fdfdfd;
+  min-height: 100vh;
+}
+
+/* ─── Contenedor centrado ─── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ─── Secciones ─── */
+.section {
+  margin-top: 2.5rem;
+}
+.section-header {
+  margin-bottom: 1rem;
+  text-align: left;     /* alineado a la izquierda */
+  padding-left: 0.5rem; /* pequeño sangrado */
+}
+.section-title {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+/* ─── Divider ─── */
 .section-divider {
-  height: 1px;
   border: none;
-  background-color: #d1d5db;
+  border-top: 1px solid #ddd;
+  opacity: 0.5;
   margin: 2rem 0;
 }
 
-/* ── Operations grid ── */
-.operations-grid {
+/* ─── Grid responsive de cards ─── */
+.cards-grid {
   display: grid;
-  /* Hace columnas de 240px exactos, y centra todas */
-  grid-template-columns: repeat(auto-fit, 240px);
-  gap: 2rem;
-  justify-content: center;   /* agrupa las tarjetas en el centro */
-  padding: 0 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;
 }
 
-/* ── Administration grid ── */
-.admin-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 240px);
-  gap: 2rem;
-  justify-content: center;
-  padding: 0 1rem;
-}
-
-/* ── Asegura que el navbar no meta padding extra ── */
-app-navbar {
+/* ─── Card base (app-menu .menu-card) ─── */
+.menu-card {
   width: 100%;
-  margin: 0;
+  max-width: 220px;
+  background: linear-gradient(180deg, #fff 0%, var(--card-bg) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+/* ─── Icono responsive ─── */
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+.icon-circle {
+  width: clamp(3rem, 10vw, 5rem);
+  height: clamp(3rem, 10vw, 5rem);
+  background-color: var(--icon-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.icon-circle:hover {
+  transform: scale(1.1);
+}
+.icon-circle i {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--brand-accent);
+}
+
+/* ─── Separador interno ─── */
+.divider-light {
+  width: 80%;
+  margin: 0.5rem 0;
+  border-color: #ddd;
+}
+
+/* ─── Título de la card ─── */
+.card-content {
+  text-align: center;
+  padding: 0.5rem 0;
+}
+.card-title {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 600;
+  color: var(--brand-primary);
+  line-height: 1.2;
+}
+
+/* ─── Ajustes ultra-mobile ─── */
+@media (max-width: 400px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  .icon-circle {
+    width: 4rem;
+    height: 4rem;
+  }
 }

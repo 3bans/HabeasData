@@ -1,86 +1,141 @@
-/* ── Contenedor general ── */
+/* ==========================
+   Navbar container
+   ========================== */
 .custom-menubar {
-  background-color: #ffffff;               /* blanco puro */
-  border-bottom: 1px solid #e2e8f0;        /* línea sutil */
-  padding: 0 1rem;                         /* espacio horizontal */
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(0.5rem, 2vw, 1rem);
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  flex-wrap: wrap;
+  gap: clamp(0.5rem, 2vw, 1rem);
 }
 
-/* ── Logo + título ── */
+/* ==========================
+   Logo + título
+   ========================== */
 .navbar-brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
   text-decoration: none;
 }
+
 .logo {
-  height: 40px;
-  margin-right: 0.75rem;
+  max-width: 100%;
+  height: auto;
+  /* mínimo 2rem, ideal 5vw, máximo 3rem */
+  max-height: clamp(2rem, 5vw, 3rem);
 }
+
+/* Título responsivo */
 .app-title {
-  font-size: 1.5rem;                       /* tamaño medio-grande */
   font-weight: 600;
-  color: #1f3153;                          /* azul oscuro */
+  color: #1f3a5f;
+  white-space: nowrap;
+  /* mínimo 1.25rem, ideal 2vw, máximo 1.75rem */
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
 }
 
-/* ── Zona de la derecha ── */
+/* ==========================
+   Zona derecha
+   ========================== */
 .menu-right-container {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
 }
 
-/* ── Icono de la app (opc.) ── */
+/* Ícono general de la app */
 .app-icon img {
-  width: 32px;
-  height: 32px;
+  max-width: 100%;
+  height: auto;
+  /* mínimo 1.5rem, ideal 4vw, máximo 2.5rem */
+  max-height: clamp(1.5rem, 4vw, 2.5rem);
 }
 
-/* ── Datos de usuario ── */
+/* ==========================
+   Usuario
+   ========================== */
 .user-info {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: clamp(0.25rem, 1vw, 0.75rem);
 }
+
 .user-initials {
-  width: 32px;
-  height: 32px;
-  background-color: #1f3153;               /* mismo azul oscuro */
-  color: #ffffff;
-  border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  background-color: #4A5568;
+  color: #fff;
   font-weight: 600;
+  border-radius: 50%;
+  /* tamaños fluidos */
+  width: clamp(2rem, 4vw, 3rem);
+  height: clamp(2rem, 4vw, 3rem);
+  /* texto centrado y escalable */
+  font-size: clamp(1rem, 2vw, 1.5rem);
 }
+
 .user-name {
-  font-size: 1rem;
-  color: #1f3153;
+  color: #1f3a5f;
   white-space: nowrap;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
 }
 
-/* ── Botones de navegación ── */
+/* ==========================
+   Botones circulares
+   ========================== */
 .nav-btn {
-  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
-  color: #1f3153;
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-}
-.nav-btn:hover {
-  background: rgba(31, 49, 83, 0.1);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  color: #fff !important;
+  /* tamaño fluido */
+  width: clamp(2.5rem, 6vw, 3rem);
+  height: clamp(2.5rem, 6vw, 3rem);
+  font-size: clamp(1rem, 2.5vw, 1.5rem) !important;
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
+.nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Home: color #A6C260 */
+.nav-btn-home {
+  background-color: #A6C260 !important;
+}
+.nav-btn-home:hover {
+  background-color: #8BA24F !important;
+}
+
+/* Logout: color #4975A8 */
+.nav-btn-logout {
+  background-color: #4975A8 !important;
+}
+.nav-btn-logout:hover {
+  background-color: #3D6490 !important;
+}
+
+/* ==========================
+   Ajustes para pantallas muy pequeñas
+   ========================== */
+@media (max-width: 480px) {
+  .custom-menubar {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
   .app-title {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
   .menu-right-container {
     gap: 0.5rem;
-  }
-  .user-name {
-    display: none;  /* oculta el nombre en pantallas pequeñas */
   }
 }

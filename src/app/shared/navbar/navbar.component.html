@@ -7,15 +7,13 @@
     </a>
   </ng-template>
 
-  <!-- Espacio central vacío para empujar el contenido de la derecha -->
-  <ng-template pTemplate="center">
-    <!-- opcional: aquí podrías añadir breadcrumbs o algo más -->
-  </ng-template>
+  <!-- Centro vacío para empujar el contenido a la derecha -->
+  <ng-template pTemplate="center"></ng-template>
 
-  <!-- Zona de usuario y botones -->
+  <!-- Zona de usuario, ícono de app y botones -->
   <ng-template pTemplate="end">
     <div class="menu-right-container">
-      <!-- Icono general de la app (opcional) -->
+      <!-- Ícono general de la app -->
       <div class="app-icon">
         <img src="habeas_pac.ico" alt="Icono Habeas" />
       </div>
@@ -32,7 +30,7 @@
         pButton
         type="button"
         icon="pi pi-home"
-        class="nav-btn"
+        class="nav-btn nav-btn-home"
         (click)="goHome()"
         aria-label="Ir al inicio"
         pTooltip="Ir al inicio"
@@ -45,7 +43,7 @@
         pButton
         type="button"
         icon="pi pi-sign-out"
-        class="nav-btn"
+        class="nav-btn nav-btn-logout"
         (click)="logout()"
         aria-label="Cerrar sesión"
         pTooltip="Cerrar sesión"

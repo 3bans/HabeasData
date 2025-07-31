@@ -2,88 +2,106 @@
 <p-toast></p-toast>
 
 <div class="flex justify-content-center mt-6">
-
   <div class="usuarios-container surface-card p-5 shadow-3 border-round-xl w-full md:w-11 lg:w-10 xl:w-8">
-    <h2 class="text-2xl font-semibold mb-4">Filtros</h2>
+    <!-- Título filtros -->
+    <h2 class="section-title">Filtros</h2>
 
-    <form [formGroup]="filtroForm" class="grid formgrid">
-      <!-- === FILA 1: 4 columnas === -->
-
-
-      <div class="field col-12 md:col-3">
-        <label for="motivo">Motivos</label>
-
-        <app-list-select-loader formControlName="idMotivo" [heightPx]="50" [url]="urlMotivosHabeas"
-          [optionLabel]="'descripcion'" [optionValue]="'id_motivo'" placeholder="Motivos" [emitLabel]="false"
-          (selectedChange)="onSeleccion($event,'motivo')" class="filter-control"></app-list-select-loader>
+    <!-- Formulario de filtros -->
+    <form [formGroup]="filtroForm" class="filtros-grid">
+      <!-- Motivos -->
+      <div class="field">
+        <label for="idMotivo">Motivos</label>
+        <app-list-select-loader
+          formControlName="idMotivo"
+          [heightPx]="50"
+          [url]="urlMotivosHabeas"
+          optionLabel="descripcion"
+          optionValue="id_motivo"
+          placeholder="Motivos"
+          [emitLabel]="false"
+          (selectedChange)="onSeleccion($event,'motivo')"
+          class="filter-control"
+        ></app-list-select-loader>
       </div>
 
-      <div class="field col-12 md:col-3">
-        <label for="medico">Médicos</label>
-
-        <app-list-select-loader formControlName="identificacion" [url]="urlCargarLista" [optionLabel]="'nombreCompleto'"
-          [optionValue]="'identificacion'" placeholder="Médico" [emitLabel]="false"
-          (selectedChange)="onSeleccion($event,'medico')" class="filter-control"></app-list-select-loader>
+      <!-- Médicos -->
+      <div class="field">
+        <label for="identificacion">Médicos</label>
+        <app-list-select-loader
+          formControlName="identificacion"
+          [url]="urlCargarLista"
+          optionLabel="nombreCompleto"
+          optionValue="identificacion"
+          placeholder="Médico"
+          [emitLabel]="false"
+          (selectedChange)="onSeleccion($event,'medico')"
+          class="filter-control"
+        ></app-list-select-loader>
       </div>
 
-
-      <div class="field col-12 md:col-3">
+      <!-- Aprobación -->
+      <div class="field">
         <label for="aprobacion">Aprobación</label>
-
-        <p-select formControlName="aprobacion" [options]="RespuestaHabeas" optionLabel="label" placeholder="Aprobación"
-          [style.height.px]="50" [style.line-height.px]="50" class="filter-control"></p-select>
+        <p-select
+          formControlName="aprobacion"
+          [options]="RespuestaHabeas"
+          optionLabel="label"
+          placeholder="Aprobación"
+          class="filter-control"
+        ></p-select>
       </div>
 
-      <!-- === FILA 2: 3 columnas === -->
-      <div class="field col-12 md:col-4">
+      <!-- Fecha inicio -->
+      <div class="field">
         <label for="fechaInicio">Fecha inicio</label>
-
-        <app-input formControlName="fechaInicio" type="date" placeholder="Fecha inicio" icon="pi pi-calendar"
-          class="filter-control"></app-input>
+        <app-input
+          formControlName="fechaInicio"
+          type="date"
+          placeholder="Fecha inicio"
+          icon="pi pi-calendar"
+          class="filter-control"
+        ></app-input>
       </div>
 
-      <div class="field col-12 md:col-4">
-        <label for="fechaInicio">Fecha fin</label>
-
-        <app-input formControlName="fechaFin" type="date" placeholder="Fecha fin" icon="pi pi-calendar"
-          class="filter-control"></app-input>
+      <!-- Fecha fin -->
+      <div class="field">
+        <label for="fechaFin">Fecha fin</label>
+        <app-input
+          formControlName="fechaFin"
+          type="date"
+          placeholder="Fecha fin"
+          icon="pi pi-calendar"
+          class="filter-control"
+        ></app-input>
       </div>
 
- <div class="field col-12 md:col-4 text-right flex justify-content-end gap-4">
-  <!-- Botón Limpiar -->
-  <button
-    type="button"
-    pButton
-    class="btn-limpiar"
-    (click)="limpiar()"
-  >
-    <i class="pi pi-sync"></i>
-    Limpiar
-  </button>
-
-  <!-- Botón Buscar -->
-  <button
-    type="button"
-    pButton
-    class="btn-buscar"
-    (click)="buscar()"
-  >
-    <i class="pi pi-search"></i>
-    Buscar
-  </button>
-</div>
+      <!-- Botones -->
+      <div class="filter-actions">
+        <button pButton type="button" class="btn-limpiar" (click)="limpiar()">
+          <i class="pi pi-sync"></i> Limpiar
+        </button>
+        <button pButton type="button" class="btn-buscar" (click)="buscarFiltros()">
+          <i class="pi pi-search"></i> Buscar
+        </button>
+      </div>
     </form>
 
-    <!-- Tabla de resultados -->
-    <div class="tabla-wrapper tabla-ajustada mt-2">
-      <h2 class="text-2xl font-semibold mb-4">Reporte de Habeas Data</h2>
-      <ng-container *ngIf="listaUsuarios?.length">
-        <app-generic-table-component [columns]="columns" [data]="listaUsuarios"
-          [showActions]="false"></app-generic-table-component>
+    <!-- Separador -->
+    <hr class="section-divider" />
+
+    <!-- Reporte -->
+    <h2 class="section-title mt-6">Reporte de Habeas Data</h2>
+    <div class="tabla-wrapper mt-4">
+      <ng-container *ngIf="listaUsuarios?.length; else emptyState">
+        <app-generic-table-component
+          [columns]="columns"
+          [data]="listaUsuarios"
+          [showActions]="false"
+        ></app-generic-table-component>
       </ng-container>
-      <div *ngIf="!listaUsuarios?.length" class="mensaje-cargando">
-        No hay registros disponibles o se están cargando...
-      </div>
+      <ng-template #emptyState>
+        <div class="mensaje-cargando">No hay registros disponibles o se están cargando…</div>
+      </ng-template>
     </div>
   </div>
 </div>

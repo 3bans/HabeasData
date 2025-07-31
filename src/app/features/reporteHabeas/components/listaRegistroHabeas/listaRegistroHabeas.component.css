@@ -1,159 +1,118 @@
-/* Contenedor principal */
+/* ── Contenedor principal ── */
 .usuarios-container {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  max-width: 100%;
-  box-sizing: border-box;
+  background: #fff;
+  border-radius: 0.5rem;
 }
 
-/* Wrapper de la tabla para scroll horizontal */
-.tabla-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-/* Estilos base de la tabla */
-.custom-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.custom-table th,
-.custom-table td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  min-width: 120px;
-}
-
-.custom-table th {
-  background-color: #f5f5f5;
+/* ── Títulos ── */
+.section-title {
+  font-size: 1.5rem;
   font-weight: 600;
+  color: #1f3a5f;
+  margin-bottom: 1rem;
 }
 
-/* Adaptación móvil */
-@media (max-width: 768px) {
-  .custom-table {
-    font-size: 0.8rem;
-  }
-  .custom-table th,
-  .custom-table td {
-    padding: 0.5rem;
-  }
+/* ── Grid responsive de filtros ── */
+.filtros-grid {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 1024px) {
+  .filtros-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .filtros-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 767px) {
+  .filtros-grid { grid-template-columns: 1fr; }
 }
 
-/* Mensaje cuando no hay datos */
-.mensaje-cargando {
-  text-align: center;
-  margin-top: 2rem;
-  color: gray;
-  font-style: italic;
-}
-
-/* Icono de identificación */
-.pi-id-card {
-  background-image: url("data:image/svg+xml,%3Csvg fill='gray' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5v14h18V5H3zm16 12H5V7h14v10zM6 8h4v2H6zm0 3h7v2H6z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: 0.5rem center;
-  background-size: 1rem;
-  padding: 0.5rem 1rem !important;
-  background-color: #fff;
-  border: 2px solid #ced4da;
-  transition: all 0.3s ease;
-  color: #495057;
-}
-
-/* Ajuste de contenido en celdas */
-.custom-table td {
-  white-space: normal !important;
-  word-wrap: break-word;
-  word-break: break-word;
-  line-height: 1.2;
-  max-width: 200px;
-}
-
-/* Filtros: altura y padding uniforme */
-.filter-control ::ng-deep .p-inputtext,
-.filter-control ::ng-deep .p-dropdown,
-.filter-control ::ng-deep .p-calendar,
-.filter-control ::ng-deep app-input ::ng-deep input {
-  height: 36px !important;
-  line-height: 36px !important;
-  padding: 0 0.75rem !important;
-  font-size: 0.9rem !important;
-}
-
-/* Ajustes para p-select */
-.p-select {
-  width: 100%;
-  padding: 0 0.75rem;
-  font-size: 0.9rem;
-  border: 2px solid #ced4da;
-  border-radius: 6px;
-  background-color: #fff;
-  transition: all 0.3s ease;
+/* ── Cada campo ── */
+.field {
   display: flex;
-  align-items: center;
-  position: relative;
+  flex-direction: column;
+}
+.field label {
+  font-weight: 600;
+  color: #1f3a5f;
+  margin-bottom: 0.25rem;
 }
 
-.p-select:focus-within {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+/* ── Controles de filtro (Loader, Input, Select, Calendar) ── */
+.filter-control ::ng-deep .p-dropdown,
+.filter-control ::ng-deep .p-inputtext,
+.filter-control ::ng-deep .p-calendar,
+.filter-control ::ng-deep app-input ::ng-deep input,
+.filter-control ::ng-deep p-select {
+  width: 100%;
+  height: 48px !important;
+  padding: 0 0.75rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.95rem !important;
+  border: 1px solid #cbd5e0 !important;
+  transition: border-color 0.2s ease;
+}
+.filter-control ::ng-deep .p-dropdown:focus-within,
+.filter-control ::ng-deep .p-inputtext:focus,
+.filter-control ::ng-deep .p-calendar:focus-within,
+.filter-control ::ng-deep p-select:focus-within {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.2) !important;
 }
 
-/* Reposicionamiento de los botones: bajarlos al fondo de la celda */
-.field.text-right {
+/* ── Botones limpiar / buscar ── */
+.filter-actions {
+  grid-column: 1 / -1;  /* ocupa toda la fila */
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end;   /* Alinea los botones al fondo */
-  gap: 0.5rem;
-  /* Opcional: si quieres aún más separación desde arriba, añade
-     margin-top: 0.5rem; */
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
-
-/* —— Botones tamaño medio —— */
-.btn-buscar,
-.btn-limpiar {
+.btn-limpiar,
+.btn-buscar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
-  height: 36px;            /* Altura fija */
-  line-height: 36px;
-  padding: 0 0.8rem;       /* Padding horizontal */
-  border-radius: 0.3rem;
-  min-width: auto;
-  box-shadow: none;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  height: 40px;
+  padding: 0 1rem;
+  font-size: 0.95rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease;
 }
-
-/* Iconos dentro de los botones */
-.btn-buscar .pi,
-.btn-limpiar .pi {
-  margin-right: 0.4rem;
-  font-size: 1rem;
+.btn-limpiar {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
 }
-
-/* Estilo Buscar */
+.btn-limpiar:hover {
+  background-color: #e5e7eb;
+}
 .btn-buscar {
-  background-color: #97b47c;
-  border: 1px solid #88a36b;
+  background-color: #217346;
+  border: 1px solid #1f553e;
   color: #fff;
 }
 .btn-buscar:hover {
-  background-color: #85a56c;
+  background-color: #1b5f33;
 }
 
-/* Estilo Limpiar */
-.btn-limpiar {
-  background-color: #e3f2fd;
-  border: 1px solid #c5d9f5;
-  color: #333;
+/* ── Separador ── */
+.section-divider {
+  border: none;
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 2rem 0;
 }
-.btn-limpiar:hover {
-  background-color: #d1e4fc;
+
+/* ── Tabla y estado vacío ── */
+.tabla-wrapper {
+  overflow-x: auto;
+}
+.mensaje-cargando {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  margin: 2rem 0;
 }

@@ -52,11 +52,13 @@ export class ListaMenuComponent implements OnInit {
 
   ngOnInit() {
     const punto = localStorage.getItem('punto');
-    if (!punto) {
+  const rol = localStorage.getItem('rol') ;
+    console.log(localStorage.getItem('rol'));
+if (!punto && (rol === '2' || rol === '5')) {
       this.showModal = true;
       this.urlpuntoServicio = API_URLS.puntoServicio;
     } else {
-      this.selectedPunto = punto;
+      this.selectedPunto = 'OTRO';
       this.acceptDisabled = false;
     }
 
