@@ -19,7 +19,7 @@
   [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)="registerHabeas('N')" (cancel)="closeModal()" [acceptDisabled]="!habilitarAceptar"
 >
   <div modal-body class="p-fluid">
-    <div *ngIf="aplicacionRol === '5'" >
+    <div *ngIf="aplicacionRol == '5'" >
     <label class="mb-4 block">Por favor seleccione al médico con el que no aceptan el habeas data:</label>
     <app-list-select-loader    #medicoNoSelectRef
  [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
@@ -35,7 +35,7 @@
 <app-modal [(visible)]="showModalRegistro" headerTitle="Autorización de habeas data " class="mb-6 block"
   [dialogStyle]="{ width: '1000px', height: '600px' }" (accept)=" enviarSms('P')" (cancel)="closeModal()" [acceptDisabled]="! habilitarAceptarRegistro">
   <div modal-body class="p-fluid">
-     <div *ngIf="aplicacionRol === '5'" >
+     <div *ngIf="aplicacionRol == '5'" >
     <label class="mb-4 block">Por favor seleccione al médico para firmar el habeas data:</label>
     <app-list-select-loader   medicoNoSelectRef
  [url]="urlCargarLista" [optionLabel]="'nombreMedico'" [optionValue]="'noIdentificacion'"
@@ -104,46 +104,133 @@
       </div>
     </form>
 
-    <div *ngIf="estadosHabeas.length > 0">
-      <div *ngFor="let estado of estadosHabeas" [ngClass]="{
-    'estado-box': true,
-    'estado-pendiente': estado.tipo === 'P',
-    'estado-aceptado': estado.tipo === 'S',
-    'estado-rechazado': estado.tipo === 'N'
-  }">
-        <ng-container [ngSwitch]="estado.tipo">
+   <!-- Si rol === '5', muestro todo tal cual -->
+<ng-container *ngIf="aplicacionRol === '5'; else rolDiferente">
+  <div *ngIf="estadosHabeas.length > 0">
+    <div *ngFor="let estado of estadosHabeas"
+         [ngClass]="{
+           'estado-box': true,
+           'estado-pendiente': estado.tipo === 'P',
+           'estado-aceptado':  estado.tipo === 'S',
+           'estado-rechazado': estado.tipo === 'N'
+         }">
+      <ng-container [ngSwitch]="estado.tipo">
 
-          <!-- Pendiente -->
-          <ng-container *ngSwitchCase="'P'">
-            <div>📌 <strong>Habeas Data pendiente:</strong></div>
-            <div>🕒 Registro pendiente con el médico: <span class="nombre-medico">{{ estado.medico }}</span></div>
-            <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+        <!-- Pendiente -->
+        <ng-container *ngSwitchCase="'P'">
+          <div>📌 <strong>Habeas Data pendiente:</strong></div>
+          <div>🕒 Registro pendiente con el médico:
+            <span class="nombre-medico">{{ estado.medico }}</span>
+          </div>
+                    <div><strong>Punto de atención :</strong> {{ estado.punto }}</div>
 
-            <!-- ✅ Botón solo si hay código -->
-            <div *ngIf="estado.codigo">
-              <button class="p-button p-button-warning mt-2" (click)="enviarCodigos(estado.codigo)">
-                🔁 Reenviar Código
-              </button>
-            </div>
-          </ng-container>
-
-          <!-- Aceptado -->
-          <ng-container *ngSwitchCase="'S'">
-            <div>✅ <strong>Habeas Data aceptado:</strong></div>
-            <div>👨‍⚕️ Aceptado con el médico: <span class="nombre-medico">{{ estado.medico }}</span></div>
-            <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
-          </ng-container>
-
-          <!-- No aceptado -->
-          <ng-container *ngSwitchCase="'N'">
-            <div>🔴 <strong>Habeas Data NO aceptado:</strong></div>
-            <div>❌ No aceptado con el médico: <span class="nombre-medico">{{ estado.medico }}</span></div>
-            <div><strong>Motivo:</strong> {{ estado.motivo }}</div>
-            <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
-          </ng-container>
+          <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+          <div *ngIf="estado.codigo">
+            <button class="p-button p-button-warning mt-2"
+                    (click)="enviarCodigos(estado.codigo,'R')">
+              🔁 Reenviar Código
+            </button>
+          </div>
         </ng-container>
-      </div>
+
+        <!-- Aceptado -->
+        <ng-container *ngSwitchCase="'S'">
+          <div>✅ <strong>Habeas Data aceptado:</strong></div>
+          <div>👨‍⚕️ Aceptado con el médico:
+            <span class="nombre-medico">{{ estado.medico }}</span>
+          </div>
+                              <div><strong>Punto de atención :</strong> {{ estado.punto }}</div>
+
+          <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+        </ng-container>
+
+        <!-- No aceptado -->
+        <ng-container *ngSwitchCase="'N'">
+          <div>🔴 <strong>Habeas Data NO aceptado:</strong></div>
+          <div>❌ No aceptado con el médico:
+            <span class="nombre-medico">{{ estado.medico }}</span>
+          </div>
+          <div><strong>Motivo:</strong> {{ estado.motivo }}</div>
+                              <div><strong>Punto de atención :</strong> {{ estado.punto }}</div>
+
+          <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+        </ng-container>
+
+      </ng-container>
     </div>
+  </div>
+</ng-container>
+
+<!-- Si rol != '5', aplico lógica “sin médico” cuando medico sea vacío o null -->
+<ng-template #rolDiferente>
+  <div *ngIf="estadosHabeas.length > 0">
+    <div *ngFor="let estado of estadosHabeas"
+         [ngClass]="{
+           'estado-box': true,
+           'estado-pendiente': estado.tipo === 'P',
+           'estado-aceptado':  estado.tipo === 'S',
+           'estado-rechazado': estado.tipo === 'N'
+         }">
+      <ng-container [ngSwitch]="estado.tipo">
+
+        <!-- Pendiente -->
+        <ng-container *ngSwitchCase="'P'">
+          <div>📌 <strong>Habeas Data pendiente:</strong></div>
+          <div *ngIf="estado.medico">
+            🕒 El paciente tiene un registro pendiente.
+          </div>
+          <div *ngIf="!estado.medico">
+            🕒 Registro pendiente con el médico:
+            <span class="nombre-medico">{{ estado.medico }}</span>
+          </div>
+                              <div><strong>Punto de atención :</strong> {{ estado.punto }}</div>
+
+          <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+
+          <div *ngIf="estado.codigo">
+            <button class="p-button p-button-warning mt-2"
+                    (click)="enviarCodigos(estado.codigo,'')">
+              🔁 Reenviar Código
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Aceptado -->
+        <ng-container *ngSwitchCase="'S'">
+          <div>✅ <strong>Habeas Data aceptado:</strong></div>
+          <div *ngIf="estado.medico">
+            👨‍⚕️ El paciente ya aceptó el Habeas Data.
+          </div>
+          <div *ngIf="!estado.medico">
+            👨‍⚕️ Aceptado con el médico:
+            <span class="nombre-medico">{{ estado.medico }}</span>
+          </div>
+                              <div><strong>Punto de atención :</strong> {{ estado.punto }}</div>
+
+          <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+        </ng-container>
+
+        <!-- No aceptado -->
+        <ng-container *ngSwitchCase="'N'">
+          <div>🔴 <strong>Habeas Data NO aceptado:</strong></div>
+          <div *ngIf="estado.medico">
+            ❌ El Habeas Data no fue aceptado por el motivo {{ estado.motivo }}.
+          </div>
+          <div *ngIf="!estado.medico">
+            ❌ No aceptado con el médico:
+            <span class="nombre-medico">{{ estado.medico }}</span>
+          </div>
+          <div><strong>Motivo:</strong> {{ estado.motivo }}</div>
+                              <div><strong>Punto de atención :</strong> {{ estado.punto }}</div>
+
+          <div><strong>Fecha:</strong> {{ estado.fecha }}</div>
+        </ng-container>
+
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
 
     <div *ngIf="mensajeErrorHabeas" class="banner-error">
       <i class="pi pi-times-circle icon-error"></i>

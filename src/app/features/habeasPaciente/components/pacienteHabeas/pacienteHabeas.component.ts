@@ -20,6 +20,8 @@ import { SelectItem } from 'primeng/api';
 import { TIPO_DOCUMENTO_OPTIONS } from '../../../../shared/constants/tipo-documento.constants';
 import { ToastModule } from "primeng/toast";
 import { ToastHelperService } from '../../../../shared/helpers/ToastHelperService';
+import { ConsentRequest } from '../../interfaces/ConsentRequest.interface';
+import { jsPDF } from 'jspdf';
 
 @Component({
   selector: 'app-paciente-habeas',
@@ -76,7 +78,8 @@ estadosHabeas:  {
   medico: string,
   fecha: string,
   motivo: string,
-  codigo?:string
+  codigo?:string,
+    punto:string;
 }[] = [];
   RespuestaHabeas = [
     { label: 'Si', value: 'Si' },
@@ -94,7 +97,7 @@ estadosHabeas:  {
   ) { }
 
   ngOnInit(): void {
-
+console.log(this.aplicacionRol);
     this.formHabeas = this.fb.group({
       tipoDocumento: [null, Validators.required],
       identificadorUnico: ['', Validators.required],
@@ -185,21 +188,27 @@ estadosHabeas:  {
     this.formChangesSub.unsubscribe();
   }
 consultarHabeas(): void {
+  let aplicaciones;
   const tipoDocumento = this.formHabeas.get('tipoDocumento')!.value;
   const identificadorUnico = this.formHabeas.get('identificadorUnico')!.value;
 const aplicacion=localStorage.getItem('rol');
+
+if (aplicacion =='5'){
+ aplicaciones='2';
+}else{
+ aplicaciones='3';
+
+}
   const url = API_URLS.administradorHabeas.consultaEstadoHabeas(
     identificadorUnico,
     tipoDocumento,
-    aplicacion!
+    aplicaciones
   );
 
   this.apiService.getResponse<ApiResponse<HabeasData | HabeasData[]>>(url).subscribe({
     next: (response: HttpResponse<ApiResponse<HabeasData | HabeasData[]>>) => {
-      console.log('✅ Respuesta completa del backend:', response);
 
       const data = response.body?.results;
-
       if (!data) {
         console.warn('⚠️ Respuesta sin datos de habeas.');
         this.mensajeErrorHabeas = 'No se encontró información de Habeas Data.';
@@ -211,14 +220,22 @@ const aplicacion=localStorage.getItem('rol');
       this.formHabeas.get('autorizacionHabeas')?.setValue('Si');
 
       const registros = Array.isArray(data) ? data : [data];
-        console.log(registros);
+
+this.registroHabilitado = !registros.some(r =>
+  r.aprobacion === 'P' || r.aprobacion === 'S',
+     this.registroHabilitado = false
+);
 
       this.estadosHabeas = registros.map((r) => ({
+
+
+
         tipo: r.aprobacion as 'P' | 'S' | 'N',
         medico: r.nombreMedico || 'Médico no especificado',
         fecha: r.fechaRegistro || 'Fecha no registrada',
         motivo: r.descripcion || 'Sin motivo registrado',
         codigo:r.codigo,
+        punto:r.punto
       }));
 
       console.log('🧾 Estados Habeas construidos:', this.estadosHabeas);
@@ -280,9 +297,8 @@ closeModal() {
   this.showModal = false;
 }
 
-
-  onReset() {
-setTimeout(() => {
+limpiar(){
+  setTimeout(() => {
     this.motivoSelectRef?.clearSelection?.();
     this.medicoNoSelectRef?.clearSelection?.();
     this.medicoSiSelectRef?.clearSelection?.();
@@ -292,6 +308,10 @@ setTimeout(() => {
 this.selectedMotivoId ="";
   this.codigo=0;
   this.estadosHabeas = []; // <- Aquí limpias visualmente el *ngFor
+}
+
+  onReset() {
+this.limpiar();
   this.showModal = false;
   this.showModalHabeas = false;
   this.showModalRegistro = false;
@@ -306,7 +326,7 @@ this.selectedMotivoId ="";
   }
 private validarEstadoAceptar(): void {
 
-  console.log('Entraaa',this.TipoHabeas.length,this.aplicacionRol);
+  //console.log('Entraaa',this.TipoHabeas.length,this.aplicacionRol);
   if (this.aplicacionRol !='5' && this.TipoHabeas.length >0){
 
  this.habilitarAceptarRegistro =true;
@@ -345,8 +365,117 @@ this.habilitarAceptar=true;
   }
 
   onSeleccionMedio(value: string): void {
+this.formHabeas.get('medioAutorizacion')?.setValue(value);
+  if (value === 'Fisico') {
+      // 1) Datos actuales del formulario / contexto
+      const profesionalNombre       = this.formHabeas.get('profesionalNombre')?.value || '';
+      const profesionalDocumento    = this.formHabeas.get('profesionalDocumento')?.value || '';
+      const pacienteNombre          = `${this.formHabeas.get('nombresPaciente')?.value || ''} ${this.formHabeas.get('primerApellido')?.value || ''}`.trim();
+      const pacienteTipoDocumento   = this.formHabeas.get('tipoDocumento')?.value || '';
+      const pacienteDocumento       = this.formHabeas.get('identificacion')?.value || '';
+      const representanteNombre     = this.formHabeas.get('representanteNombre')?.value || '';
+      const representanteTipoDoc    = this.formHabeas.get('representanteTipoDocumento')?.value || '';
+      const representanteDocumento  = this.formHabeas.get('representanteDocumento')?.value || '';
 
-  this.formHabeas.get('medioAutorizacion')?.setValue(value);
+      // 2) Fecha actual desglosada
+      const today = new Date();
+      const dia  = today.getDate();
+      // mes en español
+      const mes  = today.toLocaleDateString('es-CO', { month: 'long' });
+      const ano  = today.getFullYear();
+
+      // 3) Construimos el body según la interfaz ConsentRequest
+      const consentReq: ConsentRequest = {
+        profesionalNombre,
+        profesionalDocumento,
+        dia,
+        mes,
+        ano,
+        pacienteNombre,
+        pacienteTipoDocumento,
+        pacienteDocumento,
+        representanteNombre,
+        representanteTipoDocumento: representanteTipoDoc,
+        representanteDocumento
+      };
+
+      // 4) URL final con el ID de plantilla. Aquí '7' es solo un ejemplo:
+      const idPlantilla = '7';
+      const url = API_URLS.cargarTextohabeas(idPlantilla);
+
+
+      // 4) Hacemos el POST esperando un text/plain
+      this.apiService
+        .post1(url, consentReq, { responseType: 'text' })
+        .subscribe({
+
+    next: (renderedText: string) => {
+            // 5) Generación del PDF
+            const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+            const margin      = 40;
+            const pageWidth   = doc.internal.pageSize.getWidth();
+            const pageHeight  = doc.internal.pageSize.getHeight();
+            const usableWidth = pageWidth - margin * 2;
+            const lineHeight  = 14;
+            const fontSize    = 11;
+
+            // Título centrado en la primera página
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            const title = 'Autorización de tratamiento de datos personales de pacientes:';
+            const titleWidth = doc.getTextWidth(title);
+            doc.text(title, (pageWidth - titleWidth) / 2, margin);
+
+            // Preparamos el cuerpo
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(fontSize);
+            const lines = doc.splitTextToSize(renderedText, usableWidth);
+
+            // Escribimos justo debajo del título
+            let cursorY = margin + 30;
+
+            // Salto de página automático
+            for (const line of lines) {
+              if (cursorY + lineHeight > pageHeight - margin) {
+                doc.addPage();
+                cursorY = margin;
+              }
+              doc.text(line, margin, cursorY, {
+                maxWidth: usableWidth,
+                align: 'justify'
+              });
+              cursorY += lineHeight;
+            }
+
+            // Añadimos líneas de firma al final
+            if (cursorY + lineHeight * 4 > pageHeight - margin) {
+              doc.addPage();
+              cursorY = margin;
+            } else {
+              cursorY += lineHeight;
+            }
+
+            const half = pageWidth / 2;
+            doc.setFontSize(fontSize + 1);
+            // Firma paciente
+            doc.text('________________________', margin, cursorY);
+            doc.text('Paciente', margin, cursorY + lineHeight);
+            doc.text('Firma', margin, cursorY + lineHeight * 2);
+            // Firma representante
+            doc.text('________________________', half + margin / 2, cursorY);
+            doc.text('*Representante legal/Apoyo', half + margin / 2, cursorY + lineHeight);
+            doc.text('Firma', half + margin / 2, cursorY + lineHeight * 2);
+
+            // 6) Abrimos el PDF
+            const blobUrl = doc.output('bloburl');
+            window.open(blobUrl, '_blank');
+          },
+          error: (err: HttpErrorResponse) => {
+            console.error('❌ Error al cargar texto Habeas:', err);
+            this.toast.error('Habeas Data', 'No se pudo cargar el texto de autorización');
+          }
+        });
+    }
 
 
 
@@ -354,7 +483,7 @@ this.habilitarAceptar=true;
   this.validarEstadoAceptar();
 }
 
- enviarCodigos(codigo: any): void {
+ enviarCodigos(codigo: any, estado:any): void {
   const celular = this.formHabeas.get('celular')?.value;
 
   if (!celular) {
@@ -363,7 +492,10 @@ this.habilitarAceptar=true;
   }
 
   const mensaje = `Suministre este código ${codigo} para autorizar tratamiento de datos. Para conocer el contenido de la autorización, visite www.hptu.org.co/privacy-policy.html`;
-  this.showModalHabeas=true;
+  if (estado=='R'){
+
+    this.showModalHabeas=true;
+}
   this.enviarCodigo(mensaje, celular);
 }
 
@@ -371,25 +503,21 @@ this.habilitarAceptar=true;
   registerHabeas(tipo:string): void {
     this.crearCodigo();
     let idaplicacion=2;
-    if (tipo=='P'){
-const nombre= this.formHabeas.get('nombresPaciente')!.value + " " + this.formHabeas.get('primerApellido')!.value + " "+ this.formHabeas.get('segundoApellido')!.value + " ";
+    let idhabeas=1007;
 
-this.enviarEmail(this.codigo,this.formHabeas.get('correoElectronico')!.value ,nombre);
 
-this.enviarCodigos(this.codigo);
-    }
-
-    if (this.aplicacionRol =='5'){
+    if (this.aplicacionRol !='5'){
         this.selectedMedicoId=null;
         this.selectedMotivoId='6';
-        idaplicacion=2
+        idhabeas=7;
+        idaplicacion=3
     }
 
     const body = {
-      idMedico: +this.selectedMedicoId,
+      idMedico: this.selectedMedicoId,
       idAplicacion: idaplicacion,
       idMotivo: !this.selectedMotivoId || isNaN(+this.selectedMotivoId) ? 1 : +this.selectedMotivoId,
-
+      id_habeas:idhabeas,
       noIdentificacion: this.formHabeas.get('identificacion')!.value,
       tipoId: this.formHabeas.get('tipoDocumento')!.value,
       fechaAprobacion: new Date().toISOString().substring(0, 10),
@@ -413,10 +541,26 @@ this.enviarCodigos(this.codigo);
                                 this.toast.success('Registro pacientes', '✅ Registro exitoso del paciente'),
 
           this.showModal = false;
+           setTimeout(() => {
+    this.showModalHabeas = true; // abre el segundo modal con un retardo
+  }, 200);
+
+             if (tipo=='P'){
+const nombre= this.formHabeas.get('nombresPaciente')!.value + " " + this.formHabeas.get('primerApellido')!.value + " "+ this.formHabeas.get('segundoApellido')!.value + " ";
+
+this.enviarEmail(this.codigo,this.formHabeas.get('correoElectronico')!.value ,nombre);
+
+this.enviarCodigos(this.codigo,'');
+
+    }
+
+
         },
+
         error: (err: HttpErrorResponse) => {
                       this.toast.error('Registro pacientes', 'Error al registrar  el paciente'),
-
+this.showModalHabeas=false;
+  this.limpiar();
           console.error('❌ Error al registrar Habeas:', err);
         }
       });
@@ -441,9 +585,8 @@ crearCodigo(){
 
   this.registerHabeas(tipo);
   this.showModalRegistro = false; // cierra el primer modal
-  setTimeout(() => {
-    this.showModalHabeas = true; // abre el segundo modal con un retardo
-  }, 200);
+
+
 }
 
 
@@ -501,14 +644,17 @@ validarCodigo() {
         console.log('✅ Código válido');
         this.showModalHabeas = false;
         this.mostrarModalCodigoInvalido = false;
+          this.limpiar();
       } else {
         console.warn('⚠️ Código no válido');
         this.mensajeCodigo = '⚠️ Código incorrecto o ya aprobado.';
         this.mostrarModalCodigoInvalido = true;
       }
+      //this.limpiar();
     },
     error: (err: HttpErrorResponse) => {
       console.error('❌ Error al validar el código:', err);
+        this.limpiar();
       this.mensajeCodigo = '❌ Error al validar el código. Intente nuevamente.';
                                                         this.toast.error('Error validación código', 'Error al validar el código. Intente nuevamente')
 

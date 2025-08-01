@@ -7,6 +7,8 @@ export interface HabeasData {
   aprobacion: string;
   codigo:string;
   idMedico:string;
+punto:string;
+
 }
 
 
